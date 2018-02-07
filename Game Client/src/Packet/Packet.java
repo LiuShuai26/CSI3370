@@ -16,12 +16,12 @@ import java.io.Serializable;
 public class Packet implements Serializable {
     private pack_type type;
     private String payload;
-    
+    // Types of packets that will be sent
         public enum pack_type{
-        chat_message,
-        kick_pack,
-        file_pack,
-        username
+        chat_message, // A chat message
+        kick_pack, // A kick user packet
+        file_pack, // Packet is a file
+        username // Sends packet with the user's username
     }
     
     public Packet(String Payload){ // Creates the payload object

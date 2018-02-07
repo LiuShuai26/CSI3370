@@ -20,8 +20,6 @@ public class ClientThread extends JFrame implements Runnable {
 
     private boolean game_run = false;
     private Socket Cli_socket;
-    private GameThread run_games;
-    protected String[] game_names = {"snake", "code", "sticks", "cards"};
     protected ObjectInputStream from_client;
     // private DatagramPacket rec_pack;
     protected InetAddress client_ip;
@@ -61,19 +59,6 @@ public class ClientThread extends JFrame implements Runnable {
     public void set_usernm(String usernm) {
         Username = usernm;
     }
-
-
-    public void In_game_messages(String command) throws IOException {
-        if (command.toLowerCase().equals("start") && !game_run) {
-            run_games = new GameThread(Cli_socket, "");
-            game_run = true;
-        } else if (game_run) {
-            run_games.in_message(command);
-        } else {
-            game_serv.personal_game_mess(this, "Invalid Input.\n");
-            game_serv.personal_game_mess(this, "_reset_\n");
-        }
-    }
     public void handleMessages(){
         
     }
@@ -90,12 +75,6 @@ public class ClientThread extends JFrame implements Runnable {
             while (true) { // handles the constant chat until they disconnect
                 try {
                     c_mess = from_client.readLine();
-                    if (c_mess.charAt(0) == 'g') {
-                        In_game_messages(c_mess.substring(1));
-                    } else {
-                        s_mess = c_mess.substring(1);
-                        game_serv.echo_chat(this, s_mess, "c");
-                    }
                 } catch (Exception e) {
                     game_serv.echo_chat(this, Username + " has disconnected.", "j");
                     game_serv.update_clients_box('r', this);
