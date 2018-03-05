@@ -12,6 +12,7 @@ import java.util.*;
 import java.awt.event.*;
 import javax.swing.*;
 import Packet.Packet;
+import Packet.Packet.pack_type;
 /**
  *
  * @author Michael Muller
@@ -25,8 +26,8 @@ public class ClientThread extends JFrame implements Runnable {
     protected InetAddress client_ip;
     private String Username;
     private int place;
-    private Thread client_thread, game_thread;
-    private ChatServer game_serv = new ChatServer();
+    private Thread client_thread;
+    private ChatServer chatServer = new ChatServer();
 
     ClientThread(Socket socket, String user_nm, int index) { // populated
         Cli_socket = socket;
@@ -59,19 +60,18 @@ public class ClientThread extends JFrame implements Runnable {
     public void set_usernm(String usernm) {
         Username = usernm;
     }
-    public void handleMessages(){
+    public void handleMessages(Packet pack){
         
     }
     @Override
     public void run() {
-        String c_mess, s_mess;
         try { // Gets messages from the clients
             from_client = new ObjectInputStream(Cli_socket.getInputStream());
             // reads in the username if they join the chat
             
-            game_serv.check_nm(this);
-            game_serv.echo_chat(this, Username + " has joined the Chat", "j");
-            game_serv.update_clients_box('a', this);
+            chatServer.check_nm(this);
+            chatServer.echo_chat(this, Username + " has joined the Chat", "j");
+            chatServer.update_clients_box('a', this);
             while (true) { // handles the constant chat until they disconnect
                 try {
                     c_mess = from_client.readLine();

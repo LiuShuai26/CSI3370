@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.net.*;
 import java.io.*;
 import Packet.Packet;
-class GameClient {
+class ChatClient {
     private static Socket client_socket;
     private static ServerThread serv_thread;
     private static String ip = "";

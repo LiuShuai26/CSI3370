@@ -11,6 +11,8 @@ import javax.swing.JFrame;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import Packet.Packet;
+import Packet.Packet.pack_type;
 import javax.swing.text.DefaultCaret;
 
 /**
@@ -21,6 +23,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
 
     // variables for the thread
     private Thread server_thread;
+    private Packet lastPack;
     private ObjectOutputStream to_server;
     private ObjectInputStream from_server;
     private Socket serv_socket;
@@ -30,7 +33,6 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
     protected String my_ip;
     protected JOptionPane enter_IP;
     // variables for the GUI
-    public String default_game = "Please type 'Start' to select a game: \n";
     protected JTextArea chat_text, chat_message;
     protected JButton send_message;
     protected JLabel chat_lbl, spacer_lbl_recieve, spacer_lbl_send;
@@ -46,6 +48,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
         serv_socket = sock;
         server_thread.start();
         ChatGui(900, 450, "Chat Hub");
+        outgoingPackets(constructPacket(user_nm, pack_type.username));
     }
 
     public void ChatGui(int width, int height, String title) {
@@ -54,7 +57,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
         this.setSize(width, height);
         this.setResizable(false);
         this.setLayout(new BorderLayout());
-        this.setTitle("Game and Chat Hub. Your Ip is: " + my_ip);
+        this.setTitle("Chat Hub. Your Ip is: " + my_ip);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // defining the different compnents of the JFrame
         //Text areas and scrolling capability
@@ -77,7 +80,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
                     if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                         if (!chat_message.getText().equals("")) {
                             e.consume();
-                            send_message_func();
+                            outgoingPackets(constructPacket(chat_message.getText(), pack_type.chat_message));
                         } else {
                             e.consume();
                             chat_message.setText("");
@@ -128,33 +131,58 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
         String message;
         if (e.getSource().equals(send_message)) {
             if (!chat_message.getText().equals("")) {
-                send_message_func();
+                outgoingPackets(constructPacket(chat_message.getText(), pack_type.chat_message));
             } else {
                 chat_message.setText("");
             }
         }
     }
 
-    public void send_message_func() {
-        String message;
-        //send_data = new byte[1500];
+    private Packet constructPacket(String load, pack_type type) {
+       Packet pack = new Packet(load, type);
+        return pack;
+    }
+    private void displayMessage(Packet pack){
+        chat_message.append(pack.getPayload()); 
+    }
+    private void handlePackets(Packet pack) throws IOException {
+        pack_type type = pack.getPackType();
+        switch (type) {
+            // Do things based on the packet type
+            case chat_message:
+                // display the message
+                displayMessage(pack);
+                break;
+            case file_pack:
+                // show file popup and try and download it
+                break;
+            case kick_pack:
+                // the user is kicked
+                kicked();
+                break;
+            case username:
+                // Shouldn't receive a username packet.
+                break;
+            case connectionLoss:
+
+                break;
+            default:
+            // no packet type Error?
+        }
+    }
+
+    private void outgoingPackets(Packet pack) {
         try {
-            message = chat_message.getText();
-            to_server.writeBytes("c" + message + "\n");
-            chat_text.append(message + "\n");
-            chat_message.setText("");
+            to_server.writeObject(pack);
         } catch (Exception e) {
             JOptionPane warning = new JOptionPane("Oh No!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
             JOptionPane.showMessageDialog(warning, "The server has closed. Please Reconnect!");
             System.exit(3000);
         }
-    }
-    public void send_from_game(String msg) throws IOException {
-        to_server.writeBytes(msg);
-    }
 
+}
 
-    private void kicked() throws IOException {
+private void kicked() throws IOException {
         this.setVisible(false);
         serv_socket.close();
         JOptionPane warning = new JOptionPane("You Have been kicked from the server!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
@@ -163,7 +191,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
     }
 
     @Override
-    public void run() {
+        public void run() {
         try { // Send your usern ame to the Server to store it 
             from_server = new ObjectInputStream(serv_socket.getInputStream());
             to_server = new ObjectOutputStream((serv_socket.getOutputStream()));
@@ -172,8 +200,10 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
         }
 
         while (true) {
+            Packet inPacket;
             try { // Get the messages from the server or from other users
-
+              inPacket = (Packet) from_server.readObject();
+                handlePackets(inPacket);
             } catch (Exception e) {
                 JOptionPane warning = new JOptionPane("Oh No!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
                 JOptionPane.showMessageDialog(warning, "The server has closed. Please Reconnect!");

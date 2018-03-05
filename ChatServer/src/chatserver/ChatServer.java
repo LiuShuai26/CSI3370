@@ -6,13 +6,15 @@ import java.net.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.text.*;
+import java.util.*;
+import Packet.Packet;
+import Packet.Packet.pack_type;
 import javax.swing.event.*;
 
 public class ChatServer {
 
     private static int max = 100;
-    private static int party_num = max / 2;
-    private static ClientThread[] Clients_arr = new ClientThread[max];
+    private static List<ClientThread> listClients = new ArrayList<ClientThread>();
     private static int connected = 0, max_index = 0;
     protected static String[] Inet_addr;
     // protected static DatagramPacket rec_pack, send_pack;
@@ -44,7 +46,7 @@ public class ChatServer {
             if (connected <= max) {
                 // get_username_packet();
                 Socket Cli_socket = ssock.accept();
-                Clients_arr[connected] = new ClientThread(Cli_socket, "", connected);
+                listClients.add(new ClientThread(Cli_socket, "", connected));
                 connected++;
             }
         }
@@ -53,7 +55,7 @@ public class ChatServer {
     public static void check_nm(ClientThread cli) {
         for (int i = 0; i < connected; i++) {
             try {
-                if (cli.get_usernm().toLowerCase().equals(Clients_arr[i].get_usernm().toLowerCase()) && cli != Clients_arr[i]) {
+                if (listClients.contains(cli)) {
                     cli.set_usernm(cli.get_usernm() + connected);
                 }
             } catch (Exception e) {
