@@ -205,8 +205,10 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
             try { // Get the messages from the server or from other users
                 inPacket = (Packet) from_server.readObject();
                 handlePackets(inPacket);
-                from_server.close();
-            } catch (Exception e) {
+            }catch(EOFException er){
+                // Null
+            } 
+            catch (Exception e) {
                 System.out.println(e.toString());
                 JOptionPane warning = new JOptionPane("The Server has closed!!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
                 JOptionPane.showMessageDialog(warning, "Server has closed.");

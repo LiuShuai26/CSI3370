@@ -74,8 +74,7 @@ public class ClientThread extends JFrame implements Runnable {
             from_client = new ObjectInputStream(Cli_socket.getInputStream());
             while (true) { // handles the constant chat until they disconnect
                 try {
-                    Object o =  from_client.readObject();
-                    inPacket = (Packet) o;
+                    inPacket =  (Packet)from_client.readObject();
                     chatServer.echo_chat(this, inPacket);
                     from_client.close();
                 } catch (Exception e) {
