@@ -47,7 +47,6 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
         serv_socket = sock;
         server_thread = new Thread(this);
         to_server = new ObjectOutputStream(serv_socket.getOutputStream());
-        from_server = new ObjectInputStream(serv_socket.getInputStream());
         server_thread.start();
         ChatGui(900, 450, "Chat Hub");
         outgoingPackets(constructPacket(user_nm, pack_type.connected));
@@ -181,7 +180,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
         try {
             to_server.writeObject(pack);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println(e.toString() + " outgoing");
             JOptionPane warning = new JOptionPane("Oh No!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
             JOptionPane.showMessageDialog(warning, "The server has closed. Please Reconnect!");
             System.exit(3000);
@@ -199,14 +198,21 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
 
     @Override
     public void run() {
+        try {
+            from_server = new ObjectInputStream(serv_socket.getInputStream());
+        } catch (Exception e) {
 
+        }
         while (true) {
             Packet inPacket;
             try { // Get the messages from the server or from other users
                 inPacket = (Packet) from_server.readObject();
                 handlePackets(inPacket);
             } catch (Exception e) {
-                System.out.println(e.toString());
+                System.out.println(e.toString() + " incoming");
+                JOptionPane warning = new JOptionPane("Oh No!!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
+                JOptionPane.showMessageDialog(warning, "The server has shutdown!");
+                System.exit(1000);
             }
         }
 

@@ -13,6 +13,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import Packet.Packet;
 import Packet.Packet.pack_type;
+
 /**
  *
  * @author Michael Muller
@@ -30,9 +31,10 @@ public class ClientThread extends JFrame implements Runnable {
     private Thread client_thread;
     private ChatServer chatServer = new ChatServer();
 
-    ClientThread(Socket socket, String user_nm, int index) { // populated
+    ClientThread(Socket socket, String user_nm, int index) throws IOException { // populated
         Cli_socket = socket;
         Username = user_nm;
+        from_client = new ObjectInputStream(socket.getInputStream());
         client_thread = new Thread(this);
         client_thread.start();
         position = index;
@@ -41,12 +43,15 @@ public class ClientThread extends JFrame implements Runnable {
     public Socket get_socket() {
         return Cli_socket;
     }
-    public ObjectOutputStream getOutputStream(){
+
+    public ObjectOutputStream getOutputStream() {
         return to_client;
     }
-    public void setOutputStream(ObjectOutputStream out){
+
+    public void setOutputStream(ObjectOutputStream out) {
         to_client = out;
     }
+
     public InetAddress get_ip() {
         return client_ip;
     }
@@ -66,15 +71,17 @@ public class ClientThread extends JFrame implements Runnable {
     public void set_usernm(String usernm) {
         Username = usernm;
     }
+
     @Override
     public void run() {
         try { // Gets messages from the clients
             Packet inPacket;
-            from_client = new ObjectInputStream(Cli_socket.getInputStream());
             while (true) { // handles the constant chat until they disconnect
                 try {
                     inPacket = (Packet) from_client.readObject();
                     chatServer.echo_chat(this, inPacket);
+                } catch (EOFException ef) {
+
                 } catch (Exception e) {
                     System.out.println(e.toString());
                     chatServer.echo_chat(this, new Packet("", pack_type.disconnected));
