@@ -30,12 +30,13 @@ public class ClientThread extends JFrame implements Runnable {
     private Thread client_thread;
     private ChatServer chatServer = new ChatServer();
 
-    ClientThread(Socket socket, String user_nm, int index) { // populated
+    ClientThread(Socket socket, String user_nm, int index) throws IOException { // populated
         Cli_socket = socket;
         Username = user_nm;
         client_thread = new Thread(this);
         client_thread.start();
         position = index;
+        to_client = new ObjectOutputStream(socket.getOutputStream());
     }
 
     public Socket get_socket() {
@@ -73,12 +74,15 @@ public class ClientThread extends JFrame implements Runnable {
             from_client = new ObjectInputStream(Cli_socket.getInputStream());
             while (true) { // handles the constant chat until they disconnect
                 try {
-                    inPacket = (Packet) from_client.readObject();
+                    Object o =  from_client.readObject();
+                    inPacket = (Packet) o;
                     chatServer.echo_chat(this, inPacket);
+                    from_client.close();
                 } catch (Exception e) {
                     System.out.println(e.toString());
                     chatServer.echo_chat(this, new Packet("", pack_type.disconnected));
                     chatServer.removeClient(this);
+                    this.dispose();
                     break;
                 }
             }

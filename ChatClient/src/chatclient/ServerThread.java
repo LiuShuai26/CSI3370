@@ -148,7 +148,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
     }
 
     private void displayMessage(Packet pack) {
-        chat_message.append(pack.getPayload());
+        chat_text.append(pack.getPayload() + "\n");
     }
 
     private void handlePackets(Packet pack) throws IOException {
@@ -205,8 +205,13 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
             try { // Get the messages from the server or from other users
                 inPacket = (Packet) from_server.readObject();
                 handlePackets(inPacket);
+                from_server.close();
             } catch (Exception e) {
                 System.out.println(e.toString());
+                JOptionPane warning = new JOptionPane("The Server has closed!!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
+                JOptionPane.showMessageDialog(warning, "Server has closed.");
+                System.exit(-1);
+                break;
             }
         }
 
