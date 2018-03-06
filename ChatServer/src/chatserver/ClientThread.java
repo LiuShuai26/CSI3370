@@ -60,20 +60,17 @@ public class ClientThread extends JFrame implements Runnable {
     public void set_usernm(String usernm) {
         Username = usernm;
     }
-    public void handleMessages(Packet pack){
-        
-    }
     @Override
     public void run() {
         try { // Gets messages from the clients
-            from_client = new ObjectInputStream(Cli_socket.getInputStream());
-            chatServer.check_nm(this);
-            chatServer.addClient(this);
             Packet inPacket;
+            from_client = new ObjectInputStream(Cli_socket.getInputStream());
             while (true) { // handles the constant chat until they disconnect
                 try {
-                    chatServer.echo_chat(this, (Packet)from_client.readObject());
+                    inPacket = (Packet) from_client.readObject();
+                    chatServer.echo_chat(this, inPacket);
                 } catch (Exception e) {
+                    System.out.println(e.toString());
                     chatServer.echo_chat(this, new Packet("", pack_type.disconnected));
                     chatServer.removeClient(this);
                     break;

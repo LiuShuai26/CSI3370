@@ -36,6 +36,7 @@ class ChatClient {
             // Send packet with username
             serv_thread = new ServerThread(client_socket, username, serv_inet, port);
         } catch (Exception e) {
+            System.out.println(e.toString());
             JOptionPane warning = new JOptionPane("Oh No!!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
             JOptionPane.showMessageDialog(warning, "Make sure the IP address is correct and that the server is active!");
             System.exit(1000);

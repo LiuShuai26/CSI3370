@@ -44,12 +44,13 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
         my_ip = cli_ip[1];
         this.port = port;
         serv_ip = ip_addr;
-        server_thread = new Thread(this);
         serv_socket = sock;
+        server_thread = new Thread(this);
         to_server = new ObjectOutputStream(serv_socket.getOutputStream());
         server_thread.start();
         ChatGui(900, 450, "Chat Hub");
         outgoingPackets(constructPacket(user_nm, pack_type.connected));
+        System.out.println(user_nm);
     }
 
     public void ChatGui(int width, int height, String title) {
@@ -82,6 +83,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
                         if (!chat_message.getText().equals("")) {
                             e.consume();
                             outgoingPackets(constructPacket(chat_message.getText(), pack_type.chat_message));
+                            chat_message.setText("");
                         } else {
                             e.consume();
                             chat_message.setText("");
@@ -176,9 +178,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
 
     private void outgoingPackets(Packet pack) {
         try {
-            to_server = new ObjectOutputStream(serv_socket.getOutputStream());
             to_server.writeObject(pack);
-            to_server.close();
         } catch (Exception e) {
             System.out.println(e.toString());
             JOptionPane warning = new JOptionPane("Oh No!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
@@ -209,10 +209,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
                 inPacket = (Packet) from_server.readObject();
                 handlePackets(inPacket);
             } catch (Exception e) {
-                System.out.println(e.toString());
-                JOptionPane warning = new JOptionPane("Oh No!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
-                JOptionPane.showMessageDialog(warning, "The server has closed. Please Reconnect!");
-                System.exit(3000);
+
             }
         }
 

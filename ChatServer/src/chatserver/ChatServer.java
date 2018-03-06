@@ -169,6 +169,7 @@ public class ChatServer {
                 //update_clients_box('r', Clients_arr[i]);
                 to_client = new ObjectOutputStream((cli.get_socket().getOutputStream()));
                 constructPacket(reason, pack_type.kick_pack);
+                cli.get_socket().close();
             } catch (Exception e) {
                 // not sure
             }
@@ -186,7 +187,7 @@ public class ChatServer {
 
     public static void echo_chat(ClientThread client, Packet pack) throws IOException {
         if (pack.getPackType() == pack_type.connected) {
-            displayMessage(client.get_usernm() + ": " + pack.getPayload());
+            displayMessage(pack.getPayload() + " has connected!");
         } else {
             displayMessage(pack.getPayload());
         }
@@ -209,7 +210,6 @@ public class ChatServer {
                 } catch (Exception e) {
                 }
             }
-            to_client.close();
         }
     }
 }
