@@ -38,6 +38,7 @@ public class ClientThread extends JFrame implements Runnable {
         client_thread = new Thread(this);
         client_thread.start();
         position = index;
+        to_client = new ObjectOutputStream(socket.getOutputStream());
     }
 
     public Socket get_socket() {
@@ -78,14 +79,19 @@ public class ClientThread extends JFrame implements Runnable {
             Packet inPacket;
             while (true) { // handles the constant chat until they disconnect
                 try {
-                    inPacket = (Packet) from_client.readObject();
+                    inPacket =  (Packet)from_client.readObject();
                     chatServer.echo_chat(this, inPacket);
+<<<<<<< HEAD
                 } catch (EOFException ef) {
 
+=======
+                    from_client.close();
+>>>>>>> 6a1eec89c417a930e592876c8e7e8fca27773327
                 } catch (Exception e) {
                     System.out.println(e.toString());
                     chatServer.echo_chat(this, new Packet("", pack_type.disconnected));
                     chatServer.removeClient(this);
+                    this.dispose();
                     break;
                 }
             }
