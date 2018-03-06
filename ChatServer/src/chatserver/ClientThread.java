@@ -23,6 +23,7 @@ public class ClientThread extends JFrame implements Runnable {
     private Socket Cli_socket;
     private int position;
     protected ObjectInputStream from_client;
+    private ObjectOutputStream to_client;
     // private DatagramPacket rec_pack;
     protected InetAddress client_ip;
     private String Username;
@@ -40,7 +41,12 @@ public class ClientThread extends JFrame implements Runnable {
     public Socket get_socket() {
         return Cli_socket;
     }
-
+    public ObjectOutputStream getOutputStream(){
+        return to_client;
+    }
+    public void setOutputStream(ObjectOutputStream out){
+        to_client = out;
+    }
     public InetAddress get_ip() {
         return client_ip;
     }

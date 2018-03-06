@@ -47,10 +47,10 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
         serv_socket = sock;
         server_thread = new Thread(this);
         to_server = new ObjectOutputStream(serv_socket.getOutputStream());
+        from_server = new ObjectInputStream(serv_socket.getInputStream());
         server_thread.start();
         ChatGui(900, 450, "Chat Hub");
         outgoingPackets(constructPacket(user_nm, pack_type.connected));
-        System.out.println(user_nm);
     }
 
     public void ChatGui(int width, int height, String title) {
@@ -135,6 +135,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
         if (e.getSource().equals(send_message)) {
             if (!chat_message.getText().equals("")) {
                 outgoingPackets(constructPacket(chat_message.getText(), pack_type.chat_message));
+                chat_message.setText("");
             } else {
                 chat_message.setText("");
             }
@@ -198,18 +199,14 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
 
     @Override
     public void run() {
-        try { // Send your usern ame to the Server to store it 
-            from_server = new ObjectInputStream(serv_socket.getInputStream());
-        } catch (Exception ei) {
-            System.out.println("Not wroking");
-        }
+
         while (true) {
             Packet inPacket;
             try { // Get the messages from the server or from other users
                 inPacket = (Packet) from_server.readObject();
                 handlePackets(inPacket);
             } catch (Exception e) {
-
+                System.out.println(e.toString());
             }
         }
 

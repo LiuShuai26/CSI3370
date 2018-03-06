@@ -18,7 +18,6 @@ public class ChatServer {
     private static int connected = 0;
     protected static String[] Inet_addr;
     // protected static DatagramPacket rec_pack, send_pack;
-    protected static ObjectOutputStream to_client;
     // protected static DatagramSocket ssock;
     protected static ServerSocket ssock;
     protected static InetAddress client_ip;
@@ -92,7 +91,7 @@ public class ChatServer {
                     if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                         if (!message_box.getText().equals("")) {
                             e.consume();
-                            echo_chat(null, new Packet(chat_area.getText(), pack_type.chat_message));
+                            echo_chat(null, new Packet(message_box.getText(), pack_type.chat_message));
                             message_box.setText("");
                         } else {
                             e.consume();
@@ -115,7 +114,7 @@ public class ChatServer {
                 try {
                     if (e.getSource() == send_message) {
                         if (!message_box.getText().equals("")) {
-                            echo_chat(null, new Packet(chat_area.getText(), pack_type.chat_message));
+                            echo_chat(null, new Packet(message_box.getText(), pack_type.chat_message));
                             message_box.setText("");
                         }
                     } else if (e.getSource() == kick_client) {
@@ -150,7 +149,7 @@ public class ChatServer {
         } else {
             cli_box.addItem(cli.get_usernm());
         }
-        echo_chat(cli, new Packet("", pack_type.connected));
+        echo_chat(cli, new Packet(cli.get_usernm(), pack_type.connected));
     }
 
     public static void removeClient(ClientThread cli) throws IOException{
@@ -160,16 +159,16 @@ public class ChatServer {
         } else {
             cli_box.removeItem(cli.get_usernm());
         }
-        echo_chat(cli, new Packet("", pack_type.disconnected));
+        echo_chat(cli, new Packet(cli.get_usernm(), pack_type.disconnected));
     }
 
     public static void kick(ClientThread cli, String reason) { // kicks client
         for (int i = 0; i < connected; i++) {
             try {
                 //update_clients_box('r', Clients_arr[i]);
-                to_client = new ObjectOutputStream((cli.get_socket().getOutputStream()));
-                constructPacket(reason, pack_type.kick_pack);
+                cli.getOutputStream().writeObject(new Packet(reason, pack_type.kick_pack));
                 cli.get_socket().close();
+                echo_chat(null, new Packet(cli.get_usernm(), pack_type.disconnected));
             } catch (Exception e) {
                 // not sure
             }
@@ -188,14 +187,15 @@ public class ChatServer {
     public static void echo_chat(ClientThread client, Packet pack) throws IOException {
         if (pack.getPackType() == pack_type.connected) {
             displayMessage(pack.getPayload() + " has connected!");
+            client.set_usernm(pack.getPayload());
         } else {
             displayMessage(pack.getPayload());
         }
-
+        ObjectOutputStream to_client;
         for (ClientThread cli : listClients) {
-            to_client = new ObjectOutputStream((cli.get_socket().getOutputStream()));
-            if (client != cli) {
+            if (client != cli && client != null) {
                 try {
+               to_client = client.getOutputStream();
                     switch (pack.getPackType()) {
                         case chat_message:
                             to_client.writeObject(cli.get_usernm() + ": " + pack);
@@ -207,7 +207,9 @@ public class ChatServer {
                             to_client.writeObject(cli.get_usernm() + " has disconnected!");
                             break;
                     }
+                    to_client.close();
                 } catch (Exception e) {
+                    System.out.println(e.toString());
                 }
             }
         }
