@@ -15,7 +15,7 @@ public class ChatServer {
 
     private static int max = 100;
     private static List<ClientThread> listClients = new ArrayList<ClientThread>();
-    private static int connected = 0, max_index = 0;
+    private static int connected = 0;
     protected static String[] Inet_addr;
     // protected static DatagramPacket rec_pack, send_pack;
     protected static ObjectOutputStream to_client;
@@ -31,8 +31,6 @@ public class ChatServer {
     protected static JScrollPane scroll, scroll_box, scroll_clients;
     protected static JFrame Server_GUI = new JFrame();
     protected static JTextArea message_box;
-    protected static byte[] buffer = new byte[1500];
-    protected static byte[] send_data = new byte[1500];
 
     public static void main(String[] args) throws Exception {
         String client_nm = "";
@@ -94,7 +92,7 @@ public class ChatServer {
                     if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                         if (!message_box.getText().equals("")) {
                             e.consume();
-                            echo_chat(null, "Moderator: " + message_box.getText(), "m");
+                            echo_chat(null, new Packet(chat_area.getText(), pack_type.chat_message));
                             message_box.setText("");
                         } else {
                             e.consume();
@@ -117,11 +115,11 @@ public class ChatServer {
                 try {
                     if (e.getSource() == send_message) {
                         if (!message_box.getText().equals("")) {
-                            echo_chat(null, "Moderator: " + message_box.getText(), "m");
+                            echo_chat(null, new Packet(chat_area.getText(), pack_type.chat_message));
                             message_box.setText("");
                         }
                     } else if (e.getSource() == kick_client) {
-                        kick(cli_box.getSelectedItem().toString());
+
                     }
                 } catch (Exception er) {
                 }
@@ -144,84 +142,74 @@ public class ChatServer {
 
     }
 
-    public static void update_clients_box(char add_rem, ClientThread cli) {
-        if (add_rem == 'r') {
-            if (cli_box.getItemCount() == 1 && !cli_box.getSelectedItem().toString().toLowerCase().equals("no clients")) {
-                cli_box.addItem(combo_holder);
-            }
-            cli_box.removeItem(cli.get_usernm());
+    public static void addClient(ClientThread cli) throws IOException {
+        listClients.add(cli);
+        if (listClients.size() == 1) {
+            cli_box.addItem(cli.get_usernm());
+            cli_box.removeItem(combo_holder);
         } else {
-            if (cli_box.getItemCount() == 1) {
-                cli_box.removeItem(combo_holder);
-            }
             cli_box.addItem(cli.get_usernm());
         }
+        echo_chat(cli, new Packet("", pack_type.connected));
     }
 
-    public static void kick(String usernm) { // kicks client
+    public static void removeClient(ClientThread cli) throws IOException{
+        listClients.remove(cli);
+        if (listClients.size() == 0) {
+            cli_box.addItem(combo_holder);
+        } else {
+            cli_box.removeItem(cli.get_usernm());
+        }
+        echo_chat(cli, new Packet("", pack_type.disconnected));
+    }
+
+    public static void kick(ClientThread cli, String reason) { // kicks client
         for (int i = 0; i < connected; i++) {
             try {
-                if (Clients_arr[i].get_usernm().equals(usernm)) {
-                    //update_clients_box('r', Clients_arr[i]);
-                    to_client = new ObjectOutputStream((Clients_arr[i].get_socket().getOutputStream()));
-                    to_client.writeBytes("k\n");
-                }
+                //update_clients_box('r', Clients_arr[i]);
+                to_client = new ObjectOutputStream((cli.get_socket().getOutputStream()));
+                constructPacket(reason, pack_type.kick_pack);
             } catch (Exception e) {
-
+                // not sure
             }
         }
     }
 
-    public static void remove_client(int index) {
-        int i;
-        for (i = index; i < connected; i++) {
-            Clients_arr[i] = Clients_arr[i + 1];
-            if (connected > 1) {
-                try {
-                    Clients_arr[i].set_place(i);
-                } catch (Exception e) {
-
-                }
-            }
-        }
-        if (i > 0) {
-            connected--;
-        }
+    public static Packet constructPacket(String load, pack_type type) {
+        Packet pack = new Packet(load, type);
+        return pack;
     }
 
-    public static void personal_game_mess(ClientThread cli, String msg) throws IOException {
-        DataOutputStream to_cli_per = new DataOutputStream(cli.get_socket().getOutputStream());
-        to_cli_per.writeBytes("g" + msg);
+    private static void displayMessage(String message) {
+        chat_area.append(message + "\n");
     }
 
-    public static void echo_chat(ClientThread client, String message, String joined_chat) throws IOException {
-        if (joined_chat.equals("c")) {
-            chat_area.append(client.get_usernm() + ": " + message + "\n");
+    public static void echo_chat(ClientThread client, Packet pack) throws IOException {
+        if (pack.getPackType() == pack_type.connected) {
+            displayMessage(client.get_usernm() + ": " + pack.getPayload());
         } else {
-            chat_area.append(message + "\n");
+            displayMessage(pack.getPayload());
         }
 
-        for (int i = 0; i < connected; i++) {
-            to_client = new ObjectOutputStream((Clients_arr[i].get_socket().getOutputStream()));
-            if (client != Clients_arr[i] || joined_chat.equals("m")) {
+        for (ClientThread cli : listClients) {
+            to_client = new ObjectOutputStream((cli.get_socket().getOutputStream()));
+            if (client != cli) {
                 try {
-                    if (joined_chat.equals("c")) { // A chat message
-//                            send_data = (client.get_usernm() + ": " + message).getBytes();
-//                            send_pack = new DatagramPacket(send_data, send_data.length, Clients_arr[i].get_ip(), 387);
-//                            ssock.send(send_pack);
-                        to_client.writeBytes("c" + client.get_usernm() + ": " + message + "\n");
-                    } else if (joined_chat.equals("j")) { //
-//                            send_data = message.getBytes();
-//                            send_pack = new DatagramPacket(send_data, send_data.length, Clients_arr[i].get_ip(), 387);
-//                            ssock.send(send_pack);
-                        to_client.writeBytes("c" + message + "\n");
-                    } else {
-                        to_client.writeBytes("c" + message + "\n");
+                    switch (pack.getPackType()) {
+                        case chat_message:
+                            to_client.writeObject(cli.get_usernm() + ": " + pack);
+                            break;
+                        case connected:
+                            to_client.writeObject(cli.get_usernm() + " has connected!");
+                            break;
+                        case disconnected:
+                            to_client.writeObject(cli.get_usernm() + " has disconnected!");
+                            break;
                     }
-
                 } catch (Exception e) {
                 }
             }
+            to_client.close();
         }
     }
 }

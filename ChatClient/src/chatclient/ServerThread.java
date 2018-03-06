@@ -46,9 +46,10 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
         serv_ip = ip_addr;
         server_thread = new Thread(this);
         serv_socket = sock;
+        to_server = new ObjectOutputStream(serv_socket.getOutputStream());
         server_thread.start();
         ChatGui(900, 450, "Chat Hub");
-        outgoingPackets(constructPacket(user_nm, pack_type.username));
+        outgoingPackets(constructPacket(user_nm, pack_type.connected));
     }
 
     public void ChatGui(int width, int height, String title) {
@@ -139,12 +140,14 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
     }
 
     private Packet constructPacket(String load, pack_type type) {
-       Packet pack = new Packet(load, type);
+        Packet pack = new Packet(load, type);
         return pack;
     }
-    private void displayMessage(Packet pack){
-        chat_message.append(pack.getPayload()); 
+
+    private void displayMessage(Packet pack) {
+        chat_message.append(pack.getPayload());
     }
+
     private void handlePackets(Packet pack) throws IOException {
         pack_type type = pack.getPackType();
         switch (type) {
@@ -160,7 +163,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
                 // the user is kicked
                 kicked();
                 break;
-            case username:
+            case connected:
                 // Shouldn't receive a username packet.
                 break;
             case connectionLoss:
@@ -173,16 +176,19 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
 
     private void outgoingPackets(Packet pack) {
         try {
+            to_server = new ObjectOutputStream(serv_socket.getOutputStream());
             to_server.writeObject(pack);
+            to_server.close();
         } catch (Exception e) {
+            System.out.println(e.toString());
             JOptionPane warning = new JOptionPane("Oh No!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
             JOptionPane.showMessageDialog(warning, "The server has closed. Please Reconnect!");
             System.exit(3000);
         }
 
-}
+    }
 
-private void kicked() throws IOException {
+    private void kicked() throws IOException {
         this.setVisible(false);
         serv_socket.close();
         JOptionPane warning = new JOptionPane("You Have been kicked from the server!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
@@ -191,20 +197,19 @@ private void kicked() throws IOException {
     }
 
     @Override
-        public void run() {
+    public void run() {
         try { // Send your usern ame to the Server to store it 
             from_server = new ObjectInputStream(serv_socket.getInputStream());
-            to_server = new ObjectOutputStream((serv_socket.getOutputStream()));
         } catch (Exception ei) {
             System.out.println("Not wroking");
         }
-
         while (true) {
             Packet inPacket;
             try { // Get the messages from the server or from other users
-              inPacket = (Packet) from_server.readObject();
+                inPacket = (Packet) from_server.readObject();
                 handlePackets(inPacket);
             } catch (Exception e) {
+                System.out.println(e.toString());
                 JOptionPane warning = new JOptionPane("Oh No!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
                 JOptionPane.showMessageDialog(warning, "The server has closed. Please Reconnect!");
                 System.exit(3000);
