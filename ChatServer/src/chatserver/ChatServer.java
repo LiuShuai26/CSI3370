@@ -89,6 +89,7 @@ public class ChatServer {
                     if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                         if (!message_box.getText().equals("")) {
                             e.consume();
+                            displayMessage("Administrator: " + message_box.getText());
                             echo_chat(null, constructPacket(message_box.getText(), pack_type.adminMessage));
                             message_box.setText("");
                         } else {
