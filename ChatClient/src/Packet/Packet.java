@@ -21,9 +21,10 @@ public class Packet implements Serializable {
         chat_message, // A chat message
         kick_pack, // A kick user packet
         file_pack, // Packet is a file
-        connectionLoss, // Lost connection to the server
         connected, // connected
         disconnected, // disconnected
+        whisper, // private message
+        adminMessage, // Message from administrator
     }
     
     public Packet(String payload, pack_type type){ // Creates the payload object

@@ -46,6 +46,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
         serv_ip = ip_addr;
         serv_socket = sock;
         server_thread = new Thread(this);
+        from_server = new ObjectInputStream(serv_socket.getInputStream());
         to_server = new ObjectOutputStream(serv_socket.getOutputStream());
         server_thread.start();
         ChatGui(900, 450, "Chat Hub");
@@ -81,6 +82,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
                     if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                         if (!chat_message.getText().equals("")) {
                             e.consume();
+                            displayMessage(chat_message.getText());
                             outgoingPackets(constructPacket(chat_message.getText(), pack_type.chat_message));
                             chat_message.setText("");
                         } else {
@@ -133,6 +135,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
         String message;
         if (e.getSource().equals(send_message)) {
             if (!chat_message.getText().equals("")) {
+                displayMessage(chat_message.getText());
                 outgoingPackets(constructPacket(chat_message.getText(), pack_type.chat_message));
                 chat_message.setText("");
             } else {
@@ -146,17 +149,18 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
         return pack;
     }
 
-    private void displayMessage(Packet pack) {
-        chat_text.append(pack.getPayload() + "\n");
+    private void displayMessage(String message) {
+        chat_text.append(message + "\n");
     }
 
     private void handlePackets(Packet pack) throws IOException {
         pack_type type = pack.getPackType();
         switch (type) {
             // Do things based on the packet type
+            case adminMessage:
             case chat_message:
                 // display the message
-                displayMessage(pack);
+                displayMessage(pack.getPayload());
                 break;
             case file_pack:
                 // show file popup and try and download it
@@ -168,11 +172,12 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
             case connected:
                 // Shouldn't receive a username packet.
                 break;
-            case connectionLoss:
-
+            case whisper:
+                
                 break;
             default:
             // no packet type Error?
+                break;
         }
     }
 
@@ -198,23 +203,12 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
 
     @Override
     public void run() {
-        try {
-            from_server = new ObjectInputStream(serv_socket.getInputStream());
-        } catch (Exception e) {
 
-        }
         while (true) {
             Packet inPacket;
             try { // Get the messages from the server or from other users
                 inPacket = (Packet) from_server.readObject();
                 handlePackets(inPacket);
-<<<<<<< HEAD
-            } catch (Exception e) {
-                System.out.println(e.toString() + " incoming");
-                JOptionPane warning = new JOptionPane("Oh No!!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
-                JOptionPane.showMessageDialog(warning, "The server has shutdown!");
-                System.exit(1000);
-=======
             }catch(EOFException er){
                 // Null
             } 
@@ -224,7 +218,6 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
                 JOptionPane.showMessageDialog(warning, "Server has closed.");
                 System.exit(-1);
                 break;
->>>>>>> 6a1eec89c417a930e592876c8e7e8fca27773327
             }
         }
 

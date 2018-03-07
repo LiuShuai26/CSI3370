@@ -49,16 +49,14 @@ public class ChatServer {
         }
     }
 
-    public static void check_nm(ClientThread cli) {
-        for (int i = 0; i < connected; i++) {
-            try {
-                if (listClients.contains(cli)) {
-                    cli.set_usernm(cli.get_usernm() + connected);
-                }
-            } catch (Exception e) {
-
+    public static void check_nm(ClientThread cli, String name) {
+        for (ClientThread client : listClients) {
+            if (client.get_usernm().equals(name)) {
+                cli.set_usernm(name + connected);
+                return;
             }
         }
+        cli.set_usernm(name);
     }
 
     public static void Serv_GUI(int height, int width, String title) {
@@ -91,7 +89,7 @@ public class ChatServer {
                     if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                         if (!message_box.getText().equals("")) {
                             e.consume();
-                            echo_chat(null, constructPacket(message_box.getText(), pack_type.chat_message));
+                            echo_chat(null, constructPacket(message_box.getText(), pack_type.adminMessage));
                             message_box.setText("");
                         } else {
                             e.consume();
@@ -99,7 +97,7 @@ public class ChatServer {
                         }
                     }
                 } catch (Exception er) {
-                    
+
                 }
             }
 
@@ -115,11 +113,11 @@ public class ChatServer {
                 try {
                     if (e.getSource() == send_message) {
                         if (!message_box.getText().equals("")) {
-                            echo_chat(null, constructPacket(message_box.getText(), pack_type.chat_message));
+                            echo_chat(null, constructPacket(message_box.getText(), pack_type.adminMessage));
                             message_box.setText("");
                         }
                     } else if (e.getSource() == kick_client) {
-
+                        kick(fetchUserbyName(cli_box.getSelectedItem().toString()), "Just a kick message holder");
                     }
                 } catch (Exception er) {
                 }
@@ -143,20 +141,30 @@ public class ChatServer {
     }
 
     public static void addClient(ClientThread cli) throws IOException {
-        if (listClients.size() == 1) {
+        if (listClients.size() >= 1) {
             cli_box.removeItem(combo_holder);
-        } else {
-            cli_box.addItem(cli.get_usernm());
         }
+        cli_box.addItem(cli.get_usernm());
     }
 
-    public static void removeClient(ClientThread cli) throws IOException{
-        listClients.remove(cli);
-        if (listClients.size() == 0) {
-            cli_box.addItem(combo_holder);
-        } else {
-            cli_box.removeItem(cli.get_usernm());
+    private static ClientThread fetchUserbyName(String username) {
+        for (ClientThread client : listClients) {
+            if (client.get_usernm().equals(username)) {
+                return client;
+            }
         }
+        return null; // should never be reached
+    }
+
+    public static void removeClient(ClientThread cli) throws IOException {
+        listClients.remove(cli);
+        cli_box.removeItem(cli.get_usernm());
+        if (listClients.size() == 0 && cli_box.getItemCount() == 0) {
+            cli_box.addItem(combo_holder);
+            cli_box.setSelectedItem(combo_holder);
+        }
+        cli_box.removeItem(cli.get_usernm());
+
     }
 
     public static void kick(ClientThread cli, String reason) { // kicks client
@@ -182,34 +190,43 @@ public class ChatServer {
         chat_area.append(message + "\n");
     }
 
-    public static void echo_chat(ClientThread client, Packet pack) throws IOException {
-        if (pack.getPackType() == pack_type.connected) {
-            displayMessage(pack.getPayload() + " has connected!");
-            client.set_usernm(pack.getPayload());
-            addClient(client);
-        } else {
-            displayMessage(pack.getPayload());
+    private static void handleMessages(ClientThread cli, Packet pack) {
+        switch (pack.getPackType()) {
+            case connected:
+                displayMessage(cli.get_usernm() + " has connected!");
+                break;
+            case chat_message:
+                displayMessage(cli.get_usernm() + ": " + pack.getPayload());
+                break;
+            case disconnected:
+                displayMessage(cli.get_usernm() + " has disconnected!");
+                break;
         }
+    }
+
+    public static void echo_chat(ClientThread client, Packet pack) throws IOException {
+        handleMessages(client, pack);
         ObjectOutputStream to_client;
         for (ClientThread cli : listClients) {
-            if (client != cli || client == null) {
+            if (client == null || (!client.get_usernm().equals(cli.get_usernm()))) {
                 try {
-               to_client = cli.getOutputStream();
+                    to_client = cli.getOutputStream();
                     switch (pack.getPackType()) {
                         case chat_message:
-                            to_client.writeObject(constructPacket(cli.get_usernm() + ": " + pack.getPayload(), pack_type.chat_message));
+                            to_client.writeObject(constructPacket(client.get_usernm() + ": " + pack.getPayload(), pack_type.chat_message));
                             break;
                         case connected:
-                            to_client.writeObject(constructPacket(cli.get_usernm() + " has connected!", pack_type.chat_message));
+                            to_client.writeObject(constructPacket(client.get_usernm() + " has connected!", pack_type.chat_message));
                             break;
                         case disconnected:
-                            to_client.writeObject(constructPacket(cli.get_usernm() + " has disconnected!", pack_type.chat_message));
+                            to_client.writeObject(constructPacket(client.get_usernm() + " has disconnected!", pack_type.chat_message));
                             break;
+                        case adminMessage:
+                            to_client.writeObject(constructPacket("Administrator: " + pack.getPayload(), pack_type.adminMessage));
                     }
-                    to_client.close();
                 } catch (Exception e) {
                     removeClient(cli);
-                    System.out.println(e.toString());
+                    System.out.println(e.toString() + " echo");
                 }
             }
         }
