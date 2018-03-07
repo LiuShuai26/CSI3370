@@ -34,7 +34,6 @@ public class ChatServer {
     public static void main(String[] args) throws Exception {
         String client_nm = "";
         Inet_addr = InetAddress.getLocalHost().toString().split("/");
-        //ssock = DatagramSocket(387);
         Serv_GUI(400, 550, "Chat Server " + Inet_addr[1]);
         ServerSocket ssock = new ServerSocket(1234);
         chat_area.append("Hosting at address: " + Inet_addr[1] + "\n");
@@ -51,7 +50,7 @@ public class ChatServer {
 
     public static void check_nm(ClientThread cli, String name) {
         for (ClientThread client : listClients) {
-            if (client.get_usernm().equals(name)) {
+            if (client.get_usernm().toLowerCase().equals(name.toLowerCase())) {
                 cli.set_usernm(name + connected);
                 return;
             }
@@ -60,7 +59,7 @@ public class ChatServer {
     }
 
     public static void Serv_GUI(int height, int width, String title) {
-        DefaultCaret caret_chat, caret_mess;
+        DefaultCaret caret_chat;
         Server_GUI.setSize(width, height);
         Server_GUI.setResizable(false);
         Server_GUI.setLayout(new BorderLayout());
