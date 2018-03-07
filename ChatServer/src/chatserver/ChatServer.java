@@ -15,6 +15,7 @@ public class ChatServer {
 
     private static int max = 100;
     private static List<ClientThread> listClients = new ArrayList<ClientThread>();
+    private static bannedMacs badMACS;
     private static int connected = 0;
     protected static String[] Inet_addr;
     // protected static DatagramPacket rec_pack, send_pack;
@@ -26,18 +27,18 @@ public class ChatServer {
     protected static JPanel west, south, east;
     protected static JTextArea chat_area;
     protected static JComboBox cli_box;
-    protected static JButton send_message, kick_client;
+    protected static JButton send_message, kick_client, banClient;
     protected static JScrollPane scroll, scroll_box, scroll_clients;
     protected static JFrame Server_GUI = new JFrame();
     protected static JTextArea message_box;
 
     public static void main(String[] args) throws Exception {
-        String client_nm = "";
         Inet_addr = InetAddress.getLocalHost().toString().split("/");
-        Serv_GUI(400, 550, "Chat Server " + Inet_addr[1]);
+        Serv_GUI(400, 600, "Chat Server " + Inet_addr[1]);
         ServerSocket ssock = new ServerSocket(1234);
         chat_area.append("Hosting at address: " + Inet_addr[1] + "\n");
         chat_area.append("Listening...\n");
+        badMACS = new bannedMacs();
         while (true) {
             if (connected <= max) {
                 // get_username_packet();
@@ -57,7 +58,6 @@ public class ChatServer {
         }
         cli.set_usernm(name);
     }
-
     public static void Serv_GUI(int height, int width, String title) {
         DefaultCaret caret_chat;
         Server_GUI.setSize(width, height);
@@ -107,6 +107,7 @@ public class ChatServer {
         });
         send_message = new JButton("Send");
         kick_client = new JButton("Kick");
+        banClient = new JButton("Ban");
         Server_GUI.getRootPane().setDefaultButton(send_message);
         ActionListener Click = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -118,6 +119,8 @@ public class ChatServer {
                         }
                     } else if (e.getSource() == kick_client) {
                         kick(fetchUserbyName(cli_box.getSelectedItem().toString()), "Just a kick message holder");
+                    }else if(e.getSource() == banClient){
+                        badMACS.banMAC(cli_box.getSelectedItem());
                     }
                 } catch (Exception er) {
                 }
@@ -147,6 +150,7 @@ public class ChatServer {
         cli_box.addItem(cli.get_usernm());
     }
 
+    
     private static ClientThread fetchUserbyName(String username) {
         for (ClientThread client : listClients) {
             if (client.get_usernm().equals(username)) {

@@ -34,11 +34,19 @@ public class ClientThread extends JFrame implements Runnable {
     ClientThread(Socket socket, String user_nm, int index) throws IOException { // populated
         Cli_socket = socket;
         Username = user_nm;
+        NetworkInterface network = NetworkInterface.getByInetAddress(socket.getInetAddress());
+        byte[] mac = network.getHardwareAddress();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < mac.length; i++) {
+            sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+        }
+        System.out.println(sb.toString());
+        String s = sb.toString();
+        System.out.println(s);
         to_client = new ObjectOutputStream(socket.getOutputStream());
         from_client = new ObjectInputStream(socket.getInputStream());
         client_thread = new Thread(this);
         client_thread.start();
-        position = index;
     }
 
     public Socket get_socket() {
