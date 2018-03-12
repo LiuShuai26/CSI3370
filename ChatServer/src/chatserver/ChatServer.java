@@ -120,7 +120,7 @@ public class ChatServer {
                     } else if (e.getSource() == kick_client) {
                         kick(fetchUserbyName(cli_box.getSelectedItem().toString()), "Just a kick message holder");
                     }else if(e.getSource() == banClient){
-                        badMACS.banMAC(cli_box.getSelectedItem());
+                        badMACS.banMAC(fetchUserbyName(cli_box.getSelectedItem().toString()).getMAC());
                     }
                 } catch (Exception er) {
                 }
@@ -138,7 +138,6 @@ public class ChatServer {
         west.add(kick_client);
         Server_GUI.add(west, BorderLayout.WEST);
         Server_GUI.add(south, BorderLayout.SOUTH);
-        //Server_GUI.add(east, BorderLayout.EAST);
         Server_GUI.setVisible(true);
 
     }
