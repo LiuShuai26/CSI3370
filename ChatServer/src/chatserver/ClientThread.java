@@ -30,13 +30,14 @@ public class ClientThread extends JFrame implements Runnable {
     private String MACAddress;
     private String Username;
     private Thread client_thread;
-    private ChatServer chatServer = new ChatServer();
+    private ChatServer chatServer;
 
-    ClientThread(Socket socket, String user_nm, int index) throws IOException { // populated
+    ClientThread(Socket socket, String user_nm, int index, String MAC, ChatServer serv) throws IOException { // populated
         Cli_socket = socket;
+        chatServer = serv;
         Username = user_nm;
+        MACAddress = MAC;
         client_ip = socket.getInetAddress();
-        MACAddress = pullMac();
         to_client = new ObjectOutputStream(socket.getOutputStream());
         from_client = new ObjectInputStream(socket.getInputStream());
         client_thread = new Thread(this);
@@ -46,15 +47,7 @@ public class ClientThread extends JFrame implements Runnable {
     public Socket get_socket() {
         return Cli_socket;
     }
-    private String pullMac() throws IOException{
-        NetworkInterface network = NetworkInterface.getByInetAddress(client_ip);
-        byte[] mac = network.getHardwareAddress();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < mac.length; i++) {
-            sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
-        }
-        return sb.toString();
-    }
+    
     public String getMAC(){
         return MACAddress;
     }
@@ -92,7 +85,7 @@ public class ClientThread extends JFrame implements Runnable {
             Packet inPacket;
             inPacket = (Packet) from_client.readObject(); // initial username
             chatServer.check_nm(this, inPacket.getPayload());
-            chatServer.addClient(this);
+            chatServer.getGui().addClient(this);
             chatServer.echo_chat(this, inPacket);
             while (true) { // handles the constant chat until they disconnect
                 try {
@@ -103,7 +96,7 @@ public class ClientThread extends JFrame implements Runnable {
                 } catch (Exception e) {
                     System.out.println(e.toString() + " incomming");
                     chatServer.echo_chat(this, chatServer.constructPacket("", pack_type.disconnected));
-                    chatServer.removeClient(this);
+                    chatServer.getGui().removeClient(this);
                     this.dispose();
                     break;
                 }
