@@ -19,7 +19,7 @@ import javax.swing.text.DefaultCaret;
  *
  * @author mike
  */
-public class ServerThread extends JFrame implements Runnable, ActionListener {
+public class ServerThread extends JFrame implements Runnable {
 
     // variables for the thread
     private Thread server_thread;
@@ -33,11 +33,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
     protected String my_ip;
     protected JOptionPane enter_IP;
     // variables for the GUI
-    protected JTextArea chat_text, chat_message;
-    protected JButton send_message;
-    protected JLabel chat_lbl, spacer_lbl_recieve, spacer_lbl_send;
-    protected JPanel Center, South;
-    protected JScrollPane scroll_chat, scroll_send_message;
+    private clientGUI gui;
 
     public ServerThread(Socket sock, String user_nm, InetAddress ip_addr, int port) throws IOException {
         cli_ip = InetAddress.getLocalHost().toString().split("/");
@@ -49,109 +45,15 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
         from_server = new ObjectInputStream(serv_socket.getInputStream());
         to_server = new ObjectOutputStream(serv_socket.getOutputStream());
         server_thread.start();
-        ChatGui(900, 450, "Chat Hub");
+        gui = new clientGUI(this, my_ip, 450, 600);
         outgoingPackets(constructPacket(user_nm, pack_type.connected));
     }
 
-    public void ChatGui(int width, int height, String title) {
-        DefaultCaret caret_chat_wim;
-        // create the window and its properties
-        this.setSize(width, height);
-        this.setResizable(false);
-        this.setLayout(new BorderLayout());
-        this.setTitle("Chat Hub. Your Ip is: " + my_ip);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // defining the different compnents of the JFrame
-        //Text areas and scrolling capability
-        chat_text = new JTextArea(20, 33);
-        chat_text.append("Welcome to the Chat!\n");
-        chat_text.setEditable(false);
-        chat_text.setLineWrap(true);
-        caret_chat_wim = (DefaultCaret) chat_text.getCaret();
-        caret_chat_wim.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-        scroll_chat = new JScrollPane(chat_text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        chat_message = new JTextArea(3, 27);
-        chat_message.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                try {
-                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                        if (!chat_message.getText().equals("")) {
-                            e.consume();
-                            displayMessage(chat_message.getText());
-                            outgoingPackets(constructPacket(chat_message.getText(), pack_type.chat_message));
-                            chat_message.setText("");
-                        } else {
-                            e.consume();
-                            chat_message.setText("");
-                        }
-                    }
-                } catch (Exception er) {
-
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
-        });
-        scroll_send_message = new JScrollPane(chat_message, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        chat_message.setLineWrap(true);
-        // Spacers
-        spacer_lbl_recieve = new JLabel("        ");
-        spacer_lbl_send = new JLabel("         ");
-        // adding buttons
-        send_message = new JButton("Send");
-        send_message.addActionListener(this);
-        // Jpanels needed
-        South = new JPanel();
-        Center = new JPanel();
-        // adding components to the Jpanels
-        // North components
-        Center.add(spacer_lbl_recieve);
-        Center.add(scroll_chat);
-        // South panel components
-        South.add(spacer_lbl_send);
-        South.add(send_message);
-        South.add(scroll_send_message); // JScrolling for the chat message window
-
-        // West.add(chat_lbl);
-        // adding the panels to the JFrame
-        this.add(South, BorderLayout.SOUTH);
-        this.add(Center, BorderLayout.CENTER);
-        this.setVisible(true);
-        chat_message.requestFocus();
-        if (chat_message.isFocusOwner()) {
-            this.getRootPane().setDefaultButton(send_message);
-        }
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        String message;
-        if (e.getSource().equals(send_message)) {
-            if (!chat_message.getText().equals("")) {
-                displayMessage(chat_message.getText());
-                outgoingPackets(constructPacket(chat_message.getText(), pack_type.chat_message));
-                chat_message.setText("");
-            } else {
-                chat_message.setText("");
-            }
-        }
-    }
-
-    private Packet constructPacket(String load, pack_type type) {
+    public Packet constructPacket(String load, pack_type type) {
         Packet pack = new Packet(load, type);
         return pack;
     }
 
-    private void displayMessage(String message) {
-        chat_text.append(message + "\n");
-    }
 
     private void handlePackets(Packet pack) throws IOException {
         pack_type type = pack.getPackType();
@@ -160,7 +62,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
             case adminMessage:
             case chat_message:
                 // display the message
-                displayMessage(pack.getPayload());
+                gui.displayMessage(pack.getPayload());
                 break;
             case file_pack:
                 // show file popup and try and download it
@@ -181,7 +83,7 @@ public class ServerThread extends JFrame implements Runnable, ActionListener {
         }
     }
 
-    private void outgoingPackets(Packet pack) {
+    public void outgoingPackets(Packet pack) {
         try {
             to_server.writeObject(pack);
         } catch (Exception e) {

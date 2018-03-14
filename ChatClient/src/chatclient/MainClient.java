@@ -3,17 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatserver;
+package chatclient;
 
 /**
  *
  * @author mike
  */
-
-public class Main {
-    private ChatServer server;
+public class MainClient {
     
     public static void main(String args[]) throws Exception{
-        new ChatServer();
+        new ChatClient();
     }
 }

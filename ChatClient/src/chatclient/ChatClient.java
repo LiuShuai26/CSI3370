@@ -12,12 +12,12 @@ import Packet.Packet;
 
 class ChatClient {
 
-    private static Socket client_socket;
-    private static ServerThread serv_thread;
-    private static String ip = "";
-    protected static InetAddress serv_inet;
+    private Socket client_socket;
+    private ServerThread serv_thread;
+    private String ip = "";
+    protected InetAddress serv_inet;
 
-    public static void main(String[] args) throws Exception {
+    public ChatClient() throws Exception {
         String username = "";
         int port = 1234;
         try {
