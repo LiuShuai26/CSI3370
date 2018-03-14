@@ -34,7 +34,7 @@ public class ChatServer {
             if (connected <= max) {
                 // get_username_packet();
                 Socket Cli_socket = ssock.accept();
-                if (badMACS.isMacBanned(badMACS.pullMac(Cli_socket))) {
+                if (!badMACS.isMacBanned(badMACS.pullMac(Cli_socket))) {
                     listClients.add(new ClientThread(Cli_socket, "", connected, badMACS.pullMac(Cli_socket), this));
                 }
                 connected++;

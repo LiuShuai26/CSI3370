@@ -35,7 +35,8 @@ public class clientGUI extends JFrame {
 
     public clientGUI(ServerThread client, String ip, int height, int width) {
         this.client = client;
-
+        Initialize(width, height);
+        chat_text.append("Welcome to the Chat!\n");
         setTitle("Chat Client. Your Ip is: " + ip);
     }
 
@@ -49,7 +50,6 @@ public class clientGUI extends JFrame {
         // defining the different compnents of the JFrame
         //Text areas and scrolling capability
         chat_text = new JTextArea(20, 33);
-        chat_text.append("Welcome to the Chat!\n");
         chat_text.setEditable(false);
         chat_text.setLineWrap(true);
         caret_chat_wim = (DefaultCaret) chat_text.getCaret();

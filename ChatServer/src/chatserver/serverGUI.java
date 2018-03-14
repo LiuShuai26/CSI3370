@@ -98,6 +98,7 @@ public class serverGUI extends JFrame {
                 try {
                     if (e.getSource() == send_message) {
                         if (!message_box.getText().equals("")) {
+                            chat_area.append(message_box.getText());
                             server.echo_chat(null, server.constructPacket(message_box.getText(), Packet.pack_type.adminMessage));
                             message_box.setText("");
                         }
