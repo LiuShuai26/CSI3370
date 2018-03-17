@@ -43,6 +43,7 @@ public class bannedMacs {
         for (int i = 0; i < mac.length; i++) {
             sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
         }
+        System.out.println(sb.toString());
         return sb.toString();
     }
 }

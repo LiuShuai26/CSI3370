@@ -36,23 +36,30 @@ public class ChatServer {
                 Socket Cli_socket = ssock.accept();
                 if (!badMACS.isMacBanned(badMACS.pullMac(Cli_socket))) {
                     listClients.add(new ClientThread(Cli_socket, "", connected, badMACS.pullMac(Cli_socket), this));
+                } else {
+                    sendBanMessage(Cli_socket);
                 }
                 connected++;
             }
         }
     }
-    public bannedMacs getBadMacs(){
+
+    public bannedMacs getBadMacs() {
         return badMACS;
     }
-    public serverGUI getGui(){
+
+    public serverGUI getGui() {
         return gui;
     }
-    public List<ClientThread> getClientsList(){
+
+    public List<ClientThread> getClientsList() {
         return listClients;
     }
-    public void InitializeGui(){
-        gui = new serverGUI(this, Inet_addr[1],400, 600);
+
+    public void InitializeGui() {
+        gui = new serverGUI(this, Inet_addr[1], 400, 600);
     }
+
     public void check_nm(ClientThread cli, String name) {
         for (ClientThread client : listClients) {
             if (client.get_usernm().toLowerCase().equals(name.toLowerCase())) {
@@ -63,13 +70,17 @@ public class ChatServer {
         cli.set_usernm(name);
     }
 
+    private void sendBanMessage(Socket sock) throws IOException {
+        listClients.add(new ClientThread(sock, "", connected, badMACS.pullMac(sock), this));
+        
+    }
+
     private boolean isBanned(Socket cli_sock) throws IOException {
         if (badMACS.isMacBanned(badMACS.pullMac(cli_sock))) {
             return true;
         }
         return false;
     }
-
 
     public ClientThread fetchUserbyName(String username) {
         for (ClientThread client : listClients) {
@@ -105,7 +116,7 @@ public class ChatServer {
                 gui.displayMessage(cli.get_usernm() + " has connected!");
                 break;
             case chat_message:
-               gui.displayMessage(cli.get_usernm() + ": " + pack.getPayload());
+                gui.displayMessage(cli.get_usernm() + ": " + pack.getPayload());
                 break;
             case disconnected:
                 gui.displayMessage(cli.get_usernm() + " has disconnected!");

@@ -106,6 +106,7 @@ public class serverGUI extends JFrame {
                         server.kick(server.fetchUserbyName(cli_box.getSelectedItem().toString()), "Just a kick message holder");
                     } else if (e.getSource() == banClient) {
                         server.getBadMacs().banMAC(server.fetchUserbyName(cli_box.getSelectedItem().toString()).get_socket());
+                        server.kick(server.fetchUserbyName(cli_box.getSelectedItem().toString()), "Just a kick message holder");
                     }
                 } catch (Exception er) {
                 }
@@ -113,6 +114,7 @@ public class serverGUI extends JFrame {
         };
         send_message.addActionListener(Click);
         kick_client.addActionListener(Click);
+        banClient.addActionListener(Click);
         west = new JPanel();
         south = new JPanel();
         east = new JPanel();
@@ -121,6 +123,7 @@ public class serverGUI extends JFrame {
         south.add(scroll_box);
         west.add(cli_box);
         west.add(kick_client);
+        west.add(banClient);
         add(west, BorderLayout.WEST);
         add(south, BorderLayout.SOUTH);
         setVisible(true);
