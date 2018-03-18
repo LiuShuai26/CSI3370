@@ -11,17 +11,24 @@ import Packet.Packet;
 import Packet.Packet.pack_type;
 import javax.swing.event.*;
 
-public class ChatServer {
-
+public class ChatServer 
+{
     private static int max = 100;
+    
     private static List<ClientThread> listClients = new ArrayList<ClientThread>();
+    
     private static bannedMacs badMACS;
+    
     private static int connected = 0;
+    
     protected static String[] Inet_addr;
-    // protected static DatagramPacket rec_pack, send_pack;
+    
+    // protected static DatagramPacket rec_pack, send_pack;   
     // protected static DatagramSocket ssock;
+    
     protected static ServerSocket ssock;
     protected static InetAddress client_ip;
+    
     // GUI Variables for the server
     protected static Object combo_holder = "No Clients";
     protected static JPanel west, south, east;
@@ -32,15 +39,18 @@ public class ChatServer {
     protected static JFrame Server_GUI = new JFrame();
     protected static JTextArea message_box;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception 
+    {
         Inet_addr = InetAddress.getLocalHost().toString().split("/");
         Serv_GUI(400, 600, "Chat Server " + Inet_addr[1]);
         ServerSocket ssock = new ServerSocket(1234);
         chat_area.append("Hosting at address: " + Inet_addr[1] + "\n");
         chat_area.append("Listening...\n");
         badMACS = new bannedMacs();
-        while (true) {
-            if (connected <= max) {
+        while (true) 
+        {
+            if (connected <= max) 
+            {
                 // get_username_packet();
                 Socket Cli_socket = ssock.accept();
                 listClients.add(new ClientThread(Cli_socket, "", connected));
@@ -49,96 +59,141 @@ public class ChatServer {
         }
     }
 
-    public static void check_nm(ClientThread cli, String name) {
-        for (ClientThread client : listClients) {
-            if (client.get_usernm().toLowerCase().equals(name.toLowerCase())) {
+    public static void check_nm(ClientThread cli, String name) 
+    {
+        for (ClientThread client : listClients) 
+        {
+            if (client.get_usernm().toLowerCase().equals(name.toLowerCase())) 
+            {
                 cli.set_usernm(name + connected);
                 return;
             }
         }
         cli.set_usernm(name);
     }
-    public static void Serv_GUI(int height, int width, String title) {
+    
+    public static void Serv_GUI(int height, int width, String title) 
+    {
         DefaultCaret caret_chat;
         Server_GUI.setSize(width, height);
         Server_GUI.setResizable(false);
         Server_GUI.setLayout(new BorderLayout());
         Server_GUI.setTitle(title);
         Server_GUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
         chat_area = new JTextArea(15, 30);
         chat_area.setEditable(false);
         chat_area.setLineWrap(true);
+        
         caret_chat = (DefaultCaret) chat_area.getCaret();
         caret_chat.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+        
         scroll = new JScrollPane(chat_area, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        
         cli_box = new JComboBox();
         cli_box.setEditable(false);
         cli_box.addItem(combo_holder);
+        
         message_box = new JTextArea(3, 30);
         message_box.setLineWrap(true);
+        
         scroll_box = new JScrollPane(message_box, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        message_box.addKeyListener(new KeyListener() {
+        
+        message_box.addKeyListener(new KeyListener() 
+        {
             @Override
-            public void keyTyped(KeyEvent e) {
+            public void keyTyped(KeyEvent e) 
+            {
             }
 
             @Override
-            public void keyPressed(KeyEvent e) {
-                try {
-                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                        if (!message_box.getText().equals("")) {
+            public void keyPressed(KeyEvent e) 
+            {
+                try 
+                {
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER) 
+                    {
+                        if (!message_box.getText().equals("")) 
+                        {
                             e.consume();
                             displayMessage("Administrator: " + message_box.getText());
                             echo_chat(null, constructPacket(message_box.getText(), pack_type.adminMessage));
                             message_box.setText("");
-                        } else {
+                        } 
+                        else 
+                        {
                             e.consume();
                             message_box.setText("");
                         }
                     }
-                } catch (Exception er) {
+                } 
+                catch (Exception er) 
+                {
 
                 }
             }
 
             @Override
-            public void keyReleased(KeyEvent e) {
+            public void keyReleased(KeyEvent e) 
+            {
             }
         });
+        
         send_message = new JButton("Send");
         kick_client = new JButton("Kick");
         banClient = new JButton("Ban");
         Server_GUI.getRootPane().setDefaultButton(send_message);
-        ActionListener Click = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    if (e.getSource() == send_message) {
-                        if (!message_box.getText().equals("")) {
+        
+        ActionListener Click = new ActionListener() 
+        {
+            public void actionPerformed(ActionEvent e) 
+            {
+                try 
+                {
+                    if (e.getSource() == send_message) 
+                    {
+                        if (!message_box.getText().equals("")) 
+                        {
                             echo_chat(null, constructPacket(message_box.getText(), pack_type.adminMessage));
                             message_box.setText("");
                         }
-                    } else if (e.getSource() == kick_client) {
+                    } 
+                    else if (e.getSource() == kick_client) 
+                    {
                         kick(fetchUserbyName(cli_box.getSelectedItem().toString()), "Just a kick message holder");
-                    }else if(e.getSource() == banClient){
+                    }
+                    else if(e.getSource() == banClient)
+                    {
                         badMACS.banMAC(cli_box.getSelectedItem());
                     }
-                } catch (Exception er) {
+                } 
+                catch (Exception er) 
+                {
                 }
             }
         };
+        
         send_message.addActionListener(Click);
         kick_client.addActionListener(Click);
+        
         west = new JPanel();
         south = new JPanel();
         east = new JPanel();
+        
         west.add(scroll);
+        
         south.add(send_message);
         south.add(scroll_box);
+        
         west.add(cli_box);
         west.add(kick_client);
+        
         Server_GUI.add(west, BorderLayout.WEST);
+        
         Server_GUI.add(south, BorderLayout.SOUTH);
+        
         //Server_GUI.add(east, BorderLayout.EAST);
+        
         Server_GUI.setVisible(true);
 
     }

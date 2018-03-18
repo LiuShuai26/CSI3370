@@ -21,28 +21,43 @@ import Packet.Packet.pack_type;
 public class ClientThread extends JFrame implements Runnable {
 
     private boolean game_run = false;
+    
     private Socket Cli_socket;
+    
     private int position;
+    
     protected ObjectInputStream from_client;
+    
     private ObjectOutputStream to_client;
+    
     // private DatagramPacket rec_pack;
+    
     protected InetAddress client_ip;
+    
     private String Username;
+    
     private Thread client_thread;
     private ChatServer chatServer = new ChatServer();
 
-    ClientThread(Socket socket, String user_nm, int index) throws IOException { // populated
+    ClientThread(Socket socket, String user_nm, int index) throws IOException 
+    { // populated
         Cli_socket = socket;
         Username = user_nm;
         NetworkInterface network = NetworkInterface.getByInetAddress(socket.getInetAddress());
         byte[] mac = network.getHardwareAddress();
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < mac.length; i++) {
+        
+        for (int i = 0; i < mac.length; i++) 
+        {
             sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
         }
+        
         System.out.println(sb.toString());
+        
         String s = sb.toString();
+        
         System.out.println(s);
+        
         to_client = new ObjectOutputStream(socket.getOutputStream());
         from_client = new ObjectInputStream(socket.getInputStream());
         client_thread = new Thread(this);
@@ -82,7 +97,8 @@ public class ClientThread extends JFrame implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void run() 
+    {
         try { // Gets messages from the clients
             Packet inPacket;
             inPacket = (Packet) from_client.readObject(); // initial username

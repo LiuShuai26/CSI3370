@@ -9,6 +9,7 @@ package chatclient;
  *
  * @author mike
  */
-public class clientGUI {
+public class clientGUI 
+{
     
 }
