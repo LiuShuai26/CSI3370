@@ -15,6 +15,7 @@ import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -95,6 +96,7 @@ public class serverGUI extends JFrame {
         getRootPane().setDefaultButton(send_message);
         ActionListener Click = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                String reason = "";
                 try {
                     if (e.getSource() == send_message) {
                         if (!message_box.getText().equals("")) {
@@ -103,10 +105,12 @@ public class serverGUI extends JFrame {
                             message_box.setText("");
                         }
                     } else if (e.getSource() == kick_client) {
-                        server.kick(server.fetchUserbyName(cli_box.getSelectedItem().toString()), "Just a kick message holder");
+                        reason = JOptionPane.showInputDialog("Give a reason for the kick");
+                        server.kick(server.fetchUserbyName(cli_box.getSelectedItem().toString()), reason);
                     } else if (e.getSource() == banClient) {
                         server.getBadMacs().banMAC(server.fetchUserbyName(cli_box.getSelectedItem().toString()).get_socket());
-                        server.kick(server.fetchUserbyName(cli_box.getSelectedItem().toString()), "Just a kick message holder");
+                        reason = JOptionPane.showInputDialog("Give a reason for the ban");
+                        server.ban(server.fetchUserbyName(cli_box.getSelectedItem().toString()), reason);
                     }
                 } catch (Exception er) {
                 }

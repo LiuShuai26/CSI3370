@@ -69,7 +69,7 @@ public class ServerThread extends JFrame implements Runnable {
                 break;
             case kick_pack:
                 // the user is kicked
-                kicked();
+                kicked(pack.getPayload());
                 break;
             case connected:
                 // Shouldn't receive a username packet.
@@ -77,6 +77,8 @@ public class ServerThread extends JFrame implements Runnable {
             case whisper:
                 
                 break;
+            case ban_pack:
+                
             default:
             // no packet type Error?
                 break;
@@ -95,14 +97,31 @@ public class ServerThread extends JFrame implements Runnable {
 
     }
 
-    private void kicked() throws IOException {
+    private void kicked(String reason) throws IOException {
         this.setVisible(false);
         serv_socket.close();
         JOptionPane warning = new JOptionPane("You Have been kicked from the server!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
-        JOptionPane.showMessageDialog(warning, "You have been kicked");
+        if(reason.equals("")){
+            reason = "You have been kicked.";
+        }else{
+            reason = "You have been kicked!\nReason: " + reason;
+        }
+        JOptionPane.showMessageDialog(warning, reason);
         System.exit(-1);
     }
 
+    private void Banned(String reason) throws IOException{
+        this.setVisible(false);
+        serv_socket.close();
+        JOptionPane warning = new JOptionPane("You have been banned from the server!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
+        if(reason.equals("")){
+            reason = "You have been banned.";
+        }else{
+            reason = "You have been banned!\nReason: " + reason;
+        }
+        JOptionPane.showMessageDialog(warning, reason);
+        System.exit(-1);
+    }
     @Override
     public void run() {
 

@@ -37,7 +37,7 @@ public class ChatServer {
                 if (!badMACS.isMacBanned(badMACS.pullMac(Cli_socket))) {
                     listClients.add(new ClientThread(Cli_socket, "", connected, badMACS.pullMac(Cli_socket), this));
                 } else {
-                    sendBanMessage(Cli_socket);
+                    //sendBanMessage(Cli_socket);
                 }
                 connected++;
             }
@@ -71,8 +71,9 @@ public class ChatServer {
     }
 
     private void sendBanMessage(Socket sock) throws IOException {
-        listClients.add(new ClientThread(sock, "", connected, badMACS.pullMac(sock), this));
-        
+        //listClients.add(new ClientThread(sock, "", connected, badMACS.pullMac(sock), this));
+        ObjectOutputStream to_client = new ObjectOutputStream(sock.getOutputStream());
+        to_client.writeObject(constructPacket("Still Banned", pack_type.ban_pack));
     }
 
     private boolean isBanned(Socket cli_sock) throws IOException {
@@ -96,6 +97,19 @@ public class ChatServer {
             try {
                 //update_clients_box('r', Clients_arr[i]);
                 cli.getOutputStream().writeObject(constructPacket(reason, pack_type.kick_pack));
+                cli.get_socket().close();
+                gui.removeClient(cli);
+                echo_chat(null, constructPacket(cli.get_usernm(), pack_type.disconnected));
+            } catch (Exception e) {
+                // not sure
+            }
+        }
+    }
+
+    public void ban(ClientThread cli, String reason) {
+        for (int i = 0; i < connected; i++) {
+            try {
+                cli.getOutputStream().writeObject(constructPacket(reason, pack_type.ban_pack));
                 cli.get_socket().close();
                 gui.removeClient(cli);
                 echo_chat(null, constructPacket(cli.get_usernm(), pack_type.disconnected));

@@ -25,6 +25,7 @@ public class Packet implements Serializable {
         disconnected, // disconnected
         whisper, // private message
         adminMessage, // Message from administrator
+        ban_pack, // Ban pack
     }
     
     public Packet(String payload, pack_type type){ // Creates the payload object
