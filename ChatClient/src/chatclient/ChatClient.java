@@ -38,7 +38,15 @@ class ChatClient {
         } catch (ConnectException e) {
             System.out.println(e.toString());
             JOptionPane warning = new JOptionPane("Oh No!!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
-            JOptionPane.showMessageDialog(warning, "Make sure the IP address is correct and that the server is active!");
+            JOptionPane.showMessageDialog(warning, "You couldn't connect! The server might be down!");
+            System.exit(1000);
+        }catch(SocketException se){
+            JOptionPane warning = new JOptionPane("Oh No!!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(warning, "You've entered an invalid IP !");
+            System.exit(1000);
+        }catch(EOFException eofe){
+            JOptionPane warning = new JOptionPane("Oh No!!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(warning, "You are currently banned from the server.");
             System.exit(1000);
         }
     }

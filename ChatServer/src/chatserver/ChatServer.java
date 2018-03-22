@@ -37,7 +37,7 @@ public class ChatServer {
                 if (!badMACS.isMacBanned(badMACS.pullMac(Cli_socket))) {
                     listClients.add(new ClientThread(Cli_socket, "", connected, badMACS.pullMac(Cli_socket), this));
                 } else {
-                    //sendBanMessage(Cli_socket);
+                    Cli_socket.close();
                 }
                 connected++;
             }

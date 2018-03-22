@@ -78,7 +78,7 @@ public class ServerThread extends JFrame implements Runnable {
                 
                 break;
             case ban_pack:
-                
+                Banned(pack.getPayload());
             default:
             // no packet type Error?
                 break;

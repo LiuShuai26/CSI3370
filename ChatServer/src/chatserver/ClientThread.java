@@ -94,7 +94,6 @@ public class ClientThread extends JFrame implements Runnable {
                 } catch (EOFException ef) {
 
                 } catch (Exception e) {
-                    System.out.println(e.toString() + " incomming");
                     chatServer.echo_chat(this, chatServer.constructPacket("", pack_type.disconnected));
                     chatServer.getGui().removeClient(this);
                     this.dispose();
