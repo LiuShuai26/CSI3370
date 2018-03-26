@@ -72,13 +72,16 @@ public class ServerThread extends JFrame implements Runnable {
                 kicked(pack.getPayload());
                 break;
             case connected:
-                // Shouldn't receive a username packet.
+                gui.addClient(pack.getPayload());
                 break;
             case whisper:
-                
+                gui.displayMessage("(Whisper): " + pack.getPayload());
                 break;
             case ban_pack:
                 Banned(pack.getPayload());
+                break;
+            case disconnected:
+                gui.removeClient(pack.getPayload());
             default:
             // no packet type Error?
                 break;

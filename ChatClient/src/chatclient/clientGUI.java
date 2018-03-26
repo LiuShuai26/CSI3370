@@ -7,6 +7,7 @@ package chatclient;
 
 import Packet.Packet;
 import java.awt.BorderLayout;
+import java.util.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -27,6 +28,7 @@ import javax.swing.text.DefaultCaret;
 public class clientGUI extends JFrame {
 
     private ServerThread client;
+    private List<String> clientList = new ArrayList<String>(); // stores the clients currently in the Chat for client to message
     protected JTextArea chat_text, chat_message;
     protected JButton send_message;
     protected JLabel chat_lbl, spacer_lbl_recieve, spacer_lbl_send;
@@ -69,6 +71,7 @@ public class clientGUI extends JFrame {
                             e.consume();
                             displayMessage(chat_message.getText());
                             client.outgoingPackets(client.constructPacket(chat_message.getText(), Packet.pack_type.chat_message));
+                            client.outgoingPackets(client.constructPacket("test@ I 'Entered'!", Packet.pack_type.whisper));
                             chat_message.setText("");
                         } else {
                             e.consume();
@@ -120,6 +123,7 @@ public class clientGUI extends JFrame {
                     if (!chat_message.getText().equals("")) {
                         displayMessage(chat_message.getText());
                         client.outgoingPackets(client.constructPacket(chat_message.getText(), Packet.pack_type.chat_message));
+                        client.outgoingPackets(client.constructPacket("test@ I clicked!", Packet.pack_type.whisper));
                         chat_message.setText("");
                     } else {
                         chat_message.setText("");
@@ -131,5 +135,17 @@ public class clientGUI extends JFrame {
 
     public void displayMessage(String message) {
         chat_text.append(message + "\n");
+    }
+
+    public void addClient(String Username) {
+        // Adds clients username to the list in the combobox
+        displayMessage(Username + " has connected!");
+        clientList.add(Username);
+    }
+
+    public void removeClient(String Username) {
+        // Removes client from combobox list
+        displayMessage(Username + " has disconnected");
+        clientList.remove(Username);
     }
 }
