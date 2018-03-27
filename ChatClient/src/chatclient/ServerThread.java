@@ -35,7 +35,8 @@ public class ServerThread extends JFrame implements Runnable {
     // variables for the GUI
     private clientGUI gui;
 
-    public ServerThread(Socket sock, String user_nm, InetAddress ip_addr, int port) throws IOException {
+    public ServerThread(Socket sock, String user_nm, InetAddress ip_addr, int port) throws IOException 
+    {
         cli_ip = InetAddress.getLocalHost().toString().split("/");
         my_ip = cli_ip[1];
         this.port = port;
@@ -45,7 +46,7 @@ public class ServerThread extends JFrame implements Runnable {
         from_server = new ObjectInputStream(serv_socket.getInputStream());
         to_server = new ObjectOutputStream(serv_socket.getOutputStream());
         server_thread.start();
-        gui = new clientGUI(this, my_ip, 450, 600);
+        gui = new clientGUI(this, my_ip, 400, 750);
         outgoingPackets(constructPacket(user_nm, pack_type.connected));
     }
 
