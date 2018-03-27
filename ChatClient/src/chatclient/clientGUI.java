@@ -176,7 +176,6 @@ public class clientGUI extends JFrame
         modifyJList(Username, true);
     }
 
-<<<<<<< HEAD
     private void modifyJList(String Username, boolean add){
         if(add){
             // add user to Jlist
@@ -184,11 +183,9 @@ public class clientGUI extends JFrame
             // remove user from Jlist
         }
     }
-    public void removeClient(String Username) {
-=======
+
     public void removeClient(String Username) 
     {
->>>>>>> 32f74bb7fe69af38a45c2752565f13c38bb3957d
         // Removes client from combobox list
         displayMessage(Username + " has disconnected");
         clientList.remove(Username);
