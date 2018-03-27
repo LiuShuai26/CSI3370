@@ -71,7 +71,6 @@ public class clientGUI extends JFrame {
                             e.consume();
                             displayMessage(chat_message.getText());
                             client.outgoingPackets(client.constructPacket(chat_message.getText(), Packet.pack_type.chat_message));
-                            client.outgoingPackets(client.constructPacket("test@ I 'Entered'!", Packet.pack_type.whisper));
                             chat_message.setText("");
                         } else {
                             e.consume();
@@ -123,7 +122,6 @@ public class clientGUI extends JFrame {
                     if (!chat_message.getText().equals("")) {
                         displayMessage(chat_message.getText());
                         client.outgoingPackets(client.constructPacket(chat_message.getText(), Packet.pack_type.chat_message));
-                        client.outgoingPackets(client.constructPacket("test@ I clicked!", Packet.pack_type.whisper));
                         chat_message.setText("");
                     } else {
                         chat_message.setText("");

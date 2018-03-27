@@ -53,7 +53,8 @@ public class ChatServer {
     public serverGUI getGui() {
         return gui;
     }
-    public HashSet<String> getStoredNames(){
+
+    public HashSet<String> getStoredNames() {
         return storedUsernames;
     }
 
@@ -66,12 +67,12 @@ public class ChatServer {
     }
 
     public void check_nm(ClientThread cli, String name) {
-        if(storedUsernames.contains(name)){
+        if (storedUsernames.contains(name)) {
             cli.set_usernm(name + connected);
-                    return;
+            return;
         }
         cli.set_usernm(name);
-       /* for (ClientThread client : listClients) {
+        /* for (ClientThread client : listClients) {
             if (client.get_usernm().toLowerCase().equals(name.toLowerCase())) {
                 cli.set_usernm(name + connected);
                 return;
@@ -128,7 +129,7 @@ public class ChatServer {
         return pack;
     }
 
-    private void handleMessages(ClientThread cli, Packet pack) throws IOException{
+    private void handleMessages(ClientThread cli, Packet pack) throws IOException {
         switch (pack.getPackType()) {
             case connected:
                 gui.displayMessage(cli.get_usernm() + " has connected!");
@@ -144,12 +145,13 @@ public class ChatServer {
                 break;
         }
     }
-    public void privateMessage(ClientThread cli, Packet pack) throws IOException{
+
+    public void privateMessage(ClientThread cli, Packet pack) throws IOException {
         String[] split = pack.getPayload().split("@"); // Seperates the username from the message
         ClientThread targetClient = fetchUserbyName(split[0]);
-        if(clientsHash.contains(targetClient)){
-           ObjectOutputStream to_client = targetClient.getOutputStream();
-           to_client.writeObject(constructPacket(split[1], pack_type.whisper));
+        if (clientsHash.contains(targetClient)) {
+            ObjectOutputStream to_client = targetClient.getOutputStream();
+            to_client.writeObject(constructPacket(split[1], pack_type.whisper));
         }
     }
 
