@@ -27,7 +27,6 @@ import javax.swing.text.DefaultCaret;
  */
 public class clientGUI extends JFrame 
 {
-
     private ServerThread client;
     private List<String> clientList = new ArrayList<String>(); // stores the clients currently in the Chat for client to message
     protected JTextArea chat_text, chat_message;
@@ -165,13 +164,15 @@ public class clientGUI extends JFrame
         chat_text.append(message + "\n");
     }
 
-    public void addClient(String Username) {
+    public void addClient(String Username) 
+    {
         // Adds clients username to the list in the combobox
         displayMessage(Username + " has connected!");
         clientList.add(Username);
     }
 
-    public void removeClient(String Username) {
+    public void removeClient(String Username) 
+    {
         // Removes client from combobox list
         displayMessage(Username + " has disconnected");
         clientList.remove(Username);
