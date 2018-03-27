@@ -146,10 +146,10 @@ public class ChatServer {
     }
     public void privateMessage(ClientThread cli, Packet pack) throws IOException{
         String[] split = pack.getPayload().split("@"); // Seperates the username from the message
-        ClientThread targetClient = fetchUserbyName(split[1]);
+        ClientThread targetClient = fetchUserbyName(split[0]);
         if(clientsHash.contains(targetClient)){
            ObjectOutputStream to_client = targetClient.getOutputStream();
-           to_client.writeObject(constructPacket(pack.getPayload(), pack_type.whisper));
+           to_client.writeObject(constructPacket(split[1], pack_type.whisper));
         }
     }
 
