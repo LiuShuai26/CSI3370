@@ -36,8 +36,6 @@ import javax.swing.text.DefaultCaret;
 public class clientGUI extends JFrame implements ActionListener
 {
     private ServerThread client;
-<<<<<<< HEAD
-    private List<String> clientList = new ArrayList<String>(); // stores the clients currently in the Chat for client to message
     
     // Linked List of users that gets updated whenever a new user connects to the server
     // When that happens will convert to an array that is diplayed by the JList connected users selection display
@@ -47,13 +45,8 @@ public class clientGUI extends JFrame implements ActionListener
     
     protected JButton sendButton, fileButton, whisperButton, 
             reportButton, connectionButton;
-    
-=======
+
     private List<String> clientList = new LinkedList<String>(); // stores the clients currently in the Chat for client to message
-    protected JTextArea chat_text, chat_message;
-    private JList<String> test = new JList<String>();
-    protected JButton send_message;
->>>>>>> 372401c152ac42b02200e4109ec5c10595200dcd
     protected JLabel chat_lbl, spacer_lbl_recieve, spacer_lbl_send;
     
     protected JPanel Right, South, Left, Center;
@@ -75,10 +68,6 @@ public class clientGUI extends JFrame implements ActionListener
 
     public void Initialize(int width, int height) 
     {
-        // RIGHT BORDER
-        //DefaultCaret caret_chat_wim;
-        
-        // create the window and its properties
         setSize(width, height);
         setResizable(false);
         setLayout(new BorderLayout());
@@ -87,104 +76,14 @@ public class clientGUI extends JFrame implements ActionListener
         
         SetLeft();
         
-        // defining the different compnents of the JFrame
-        //Text areas and scrolling capability
         
         SetRight();
-        // RIGHT BORDER
-        //chat_text = new JTextArea(20, 33);
-        //chat_text.setEditable(false);
-        //chat_text.setLineWrap(true);
-        
-        
-        // RIGHT BORDER
-        //caret_chat_wim = (DefaultCaret) chat_text.getCaret();
-        //caret_chat_wim.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-        
-        //RIGHT BORDER
-        //scroll_chat = new JScrollPane(chat_text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         
         SetBottom();
         
         SetCenter();
-        // SOUTH BORDER
-      /*chat_message = new JTextArea(3, 27);
-        chat_message.addKeyListener(new KeyListener() 
-        {
-            @Override
-            public void keyTyped(KeyEvent e) 
-            {
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) 
-            {
-                try 
-                {
-                    if (e.getKeyCode() == KeyEvent.VK_ENTER) 
-                    {
-                        if (!chat_message.getText().equals("")) 
-                        {
-                            e.consume();
-                            displayMessage(chat_message.getText());
-                            client.outgoingPackets(client.constructPacket(chat_message.getText(), Packet.pack_type.chat_message));
-                            chat_message.setText("");
-                        } 
-                        else 
-                        {
-                            e.consume();
-                            chat_message.setText("");
-                        }
-                    }
-                } 
-                catch (Exception er) 
-                {
-
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) 
-            {
-            }
-        });
-      */
-      
-        // SOUTH BORDER
-        //scroll_send_message = new JScrollPane(chat_message, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        //chat_message.setLineWrap(true);
-        
-        // Spacers
-        //spacer_lbl_recieve = new JLabel("        ");
-        //spacer_lbl_send = new JLabel("         ");
-        
-        // SOUTH BORDER
-        // adding buttons
-        //sendButton = new JButton("Send");
-        
-        // Jpanels needed
-        // SOUTH BORDER
-        //South = new JPanel();
-        // RIGHT BORDER
-//        Right = new JPanel();
-        
-        // adding components to the Jpanels
-        // North components
-//        Right.add(spacer_lbl_recieve);
-//        Right.add(scroll_chat);
-        
-        // South panel components
-        //South.add(spacer_lbl_send);
-        //South.add(sendButton);
-        //South.add(scroll_send_message); // JScrolling for the chat message window
-
-        // SOUTH BORDER
-        // West.add(chat_lbl);
-        // adding the panels to the JFrame
-        //this.add(South, BorderLayout.SOUTH);
-        
-        // RIGHT BORDER
-//        this.add(Right, BorderLayout.EAST);
+       
+       
         this.setVisible(true);
         
         chat_message.requestFocus();
@@ -193,53 +92,7 @@ public class clientGUI extends JFrame implements ActionListener
             this.getRootPane().setDefaultButton(sendButton);
         }
         
-        /*
-        ActionListener Click = new ActionListener() 
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                String message;
-                if (e.getSource().equals(sendButton)) 
-                {
-                    if (!chat_message.getText().equals("")) 
-                    {
-                        displayMessage(chat_message.getText());
-                        client.outgoingPackets(client.constructPacket(chat_message.getText(), Packet.pack_type.chat_message));
-                        chat_message.setText("");
-                    } 
-                    else 
-                    {
-                        chat_message.setText("");
-                    }
-                }
-                else if (e.getSource().equals(fileButton))
-                {
-                    // Needs to get a file to send
-                }
-                else if (e.getSource().equals(whisperButton))
-                {
-                    // Continue to work on Friday
-                    //client.outgoingPackets(client.constructPacket(message, e));
-                }
-                else if (e.getSource().equals(reportButton))
-                {
-                    
-                }
-                else if (e.getSource().equals(connectionButton))
-                {
-                    if (connectionButton.getText().equals(disconnText))
-                    {
-                        connectionButton.setText(connText);
-                    }
-                    else if (connectionButton.getText().equals(connText))
-                    {
-                        connectionButton.setText(disconnText);
-                    }
-                }
-            }
-        };
-        */
+       
     }
 
     private void SetLeft()
@@ -437,9 +290,7 @@ public class clientGUI extends JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e) 
     {
-        System.out.println("AN ACTION WAS PERFOMRED");
         
-        String message;
         if (e.getSource().equals(sendButton)) 
         {
             if (!chat_message.getText().equals("")) 
