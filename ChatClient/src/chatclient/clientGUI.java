@@ -6,6 +6,8 @@
 package chatclient;
 
 import Packet.Packet;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+import com.sun.javafx.scene.control.skin.VirtualFlow.ArrayLinkedList;
 import java.awt.BorderLayout;
 import java.util.*;
 import java.awt.event.ActionEvent;
@@ -16,6 +18,7 @@ import javax.print.attribute.standard.Severity;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -28,8 +31,9 @@ import javax.swing.text.DefaultCaret;
 public class clientGUI extends JFrame {
 
     private ServerThread client;
-    private List<String> clientList = new ArrayList<String>(); // stores the clients currently in the Chat for client to message
+    private List<String> clientList = new LinkedList<String>(); // stores the clients currently in the Chat for client to message
     protected JTextArea chat_text, chat_message;
+    private JList<String> test = new JList<String>();
     protected JButton send_message;
     protected JLabel chat_lbl, spacer_lbl_recieve, spacer_lbl_send;
     protected JPanel Center, South;
@@ -139,11 +143,27 @@ public class clientGUI extends JFrame {
         // Adds clients username to the list in the combobox
         displayMessage(Username + " has connected!");
         clientList.add(Username);
+        modifyJList(Username, true);
     }
 
+    private void modifyJList(String Username, boolean add){
+        if(add){
+            // add user to Jlist
+        }else{
+            // remove user from Jlist
+        }
+    }
     public void removeClient(String Username) {
         // Removes client from combobox list
         displayMessage(Username + " has disconnected");
         clientList.remove(Username);
+        modifyJList(Username, false);
+    }
+    public void whisperClient()
+    {
+        
+    }
+    public void setList(List<String> list){
+        clientList = list;
     }
 }

@@ -9,6 +9,7 @@ import javax.swing.text.*;
 import java.util.*;
 import Packet.Packet;
 import Packet.Packet.pack_type;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
 import javax.swing.event.*;
 import jdk.nashorn.internal.runtime.StoredScript;
 
@@ -179,6 +180,15 @@ public class ChatServer {
                 } catch (Exception e) {
                     gui.removeClient(cli);
                     System.out.println(e.toString() + " echo");
+                }
+            } else if (client.get_usernm().equals(cli.get_usernm())) {
+                if (pack.getPackType() == pack_type.connected) {
+                    to_client = client.getOutputStream();
+                    // sends list of current users
+                    List<String> list = new ArrayList<String>(storedUsernames);
+                    Packet listPack = constructPacket("", pack_type.listPack);
+                    listPack.setClientList(list);
+                    to_client.writeObject(listPack);
                 }
             }
         }
