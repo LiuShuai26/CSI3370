@@ -55,7 +55,6 @@ public class ServerThread extends JFrame implements Runnable {
         return pack;
     }
 
-
     private void handlePackets(Packet pack) throws IOException {
         pack_type type = pack.getPackType();
         switch (type) {
@@ -81,10 +80,14 @@ public class ServerThread extends JFrame implements Runnable {
             case ban_pack:
                 Banned(pack.getPayload());
                 break;
+            case listPack:
+                
+                break;
             case disconnected:
                 gui.removeClient(pack.getPayload());
+                break;
             default:
-            // no packet type Error?
+                // no packet type Error?
                 break;
         }
     }
@@ -101,31 +104,33 @@ public class ServerThread extends JFrame implements Runnable {
 
     }
 
+   
     private void kicked(String reason) throws IOException {
         this.setVisible(false);
         serv_socket.close();
         JOptionPane warning = new JOptionPane("You Have been kicked from the server!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
-        if(reason.equals("")){
+        if (reason.equals("")) {
             reason = "You have been kicked.";
-        }else{
+        } else {
             reason = "You have been kicked!\nReason: " + reason;
         }
         JOptionPane.showMessageDialog(warning, reason);
         System.exit(-1);
     }
 
-    private void Banned(String reason) throws IOException{
+    private void Banned(String reason) throws IOException {
         this.setVisible(false);
         serv_socket.close();
         JOptionPane warning = new JOptionPane("You have been banned from the server!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
-        if(reason.equals("")){
+        if (reason.equals("")) {
             reason = "You have been banned.";
-        }else{
+        } else {
             reason = "You have been banned!\nReason: " + reason;
         }
         JOptionPane.showMessageDialog(warning, reason);
         System.exit(-1);
     }
+
     @Override
     public void run() {
 
@@ -134,10 +139,9 @@ public class ServerThread extends JFrame implements Runnable {
             try { // Get the messages from the server or from other users
                 inPacket = (Packet) from_server.readObject();
                 handlePackets(inPacket);
-            }catch(EOFException er){
+            } catch (EOFException er) {
                 // Null
-            } 
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println(e.toString());
                 JOptionPane warning = new JOptionPane("The Server has closed!!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
                 JOptionPane.showMessageDialog(warning, "Server has closed.");

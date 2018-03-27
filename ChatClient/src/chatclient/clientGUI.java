@@ -6,6 +6,8 @@
 package chatclient;
 
 import Packet.Packet;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+import com.sun.javafx.scene.control.skin.VirtualFlow.ArrayLinkedList;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -34,6 +36,7 @@ import javax.swing.text.DefaultCaret;
 public class clientGUI extends JFrame implements ActionListener
 {
     private ServerThread client;
+<<<<<<< HEAD
     private List<String> clientList = new ArrayList<String>(); // stores the clients currently in the Chat for client to message
     
     // Linked List of users that gets updated whenever a new user connects to the server
@@ -45,6 +48,12 @@ public class clientGUI extends JFrame implements ActionListener
     protected JButton sendButton, fileButton, whisperButton, 
             reportButton, connectionButton;
     
+=======
+    private List<String> clientList = new LinkedList<String>(); // stores the clients currently in the Chat for client to message
+    protected JTextArea chat_text, chat_message;
+    private JList<String> test = new JList<String>();
+    protected JButton send_message;
+>>>>>>> 372401c152ac42b02200e4109ec5c10595200dcd
     protected JLabel chat_lbl, spacer_lbl_recieve, spacer_lbl_send;
     
     protected JPanel Right, South, Left, Center;
@@ -399,6 +408,15 @@ public class clientGUI extends JFrame implements ActionListener
         // Adds clients username to the list in the combobox
         displayMessage(Username + " has connected!");
         clientList.add(Username);
+        modifyJList(Username, true);
+    }
+
+    private void modifyJList(String Username, boolean add){
+        if(add){
+            // add user to Jlist
+        }else{
+            // remove user from Jlist
+        }
     }
 
     public void removeClient(String Username) 
@@ -406,6 +424,14 @@ public class clientGUI extends JFrame implements ActionListener
         // Removes client from combobox list
         displayMessage(Username + " has disconnected");
         clientList.remove(Username);
+        modifyJList(Username, false);
+    }
+    public void whisperClient()
+    {
+        
+    }
+    public void setList(List<String> list){
+        clientList = list;
     }
     
     @Override
