@@ -24,7 +24,8 @@ import javax.swing.text.DefaultCaret;
  *
  * @author mike
  */
-public class clientGUI extends JFrame {
+public class clientGUI extends JFrame 
+{
 
     private ServerThread client;
     protected JTextArea chat_text, chat_message;
@@ -33,14 +34,16 @@ public class clientGUI extends JFrame {
     protected JPanel Center, South;
     protected JScrollPane scroll_chat, scroll_send_message;
 
-    public clientGUI(ServerThread client, String ip, int height, int width) {
+    public clientGUI(ServerThread client, String ip, int height, int width) 
+    {
         this.client = client;
         Initialize(width, height);
         chat_text.append("Welcome to the Chat!\n");
         setTitle("Chat Client. Your Ip is: " + ip);
     }
 
-    public void Initialize(int width, int height) {
+    public void Initialize(int width, int height) 
+    {
         DefaultCaret caret_chat_wim;
         // create the window and its properties
         setSize(width, height);
@@ -56,48 +59,65 @@ public class clientGUI extends JFrame {
         caret_chat_wim.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         scroll_chat = new JScrollPane(chat_text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         chat_message = new JTextArea(3, 27);
-        chat_message.addKeyListener(new KeyListener() {
+        chat_message.addKeyListener(new KeyListener() 
+        {
             @Override
-            public void keyTyped(KeyEvent e) {
+            public void keyTyped(KeyEvent e) 
+            {
             }
 
             @Override
-            public void keyPressed(KeyEvent e) {
-                try {
-                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                        if (!chat_message.getText().equals("")) {
+            public void keyPressed(KeyEvent e) 
+            {
+                try 
+                {
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER) 
+                    {
+                        if (!chat_message.getText().equals("")) 
+                        {
                             e.consume();
                             displayMessage(chat_message.getText());
                             client.outgoingPackets(client.constructPacket(chat_message.getText(), Packet.pack_type.chat_message));
                             chat_message.setText("");
-                        } else {
+                        } 
+                        else 
+                        {
                             e.consume();
                             chat_message.setText("");
                         }
                     }
-                } catch (Exception er) {
+                } 
+                catch (Exception er) 
+                {
 
                 }
             }
 
             @Override
-            public void keyReleased(KeyEvent e) {
+            public void keyReleased(KeyEvent e) 
+            {
             }
         });
+        
         scroll_send_message = new JScrollPane(chat_message, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         chat_message.setLineWrap(true);
+        
         // Spacers
         spacer_lbl_recieve = new JLabel("        ");
         spacer_lbl_send = new JLabel("         ");
+        
         // adding buttons
         send_message = new JButton("Send");
+        
         // Jpanels needed
         South = new JPanel();
         Center = new JPanel();
+        
         // adding components to the Jpanels
         // North components
         Center.add(spacer_lbl_recieve);
         Center.add(scroll_chat);
+        
         // South panel components
         South.add(spacer_lbl_send);
         South.add(send_message);
@@ -108,20 +128,29 @@ public class clientGUI extends JFrame {
         this.add(South, BorderLayout.SOUTH);
         this.add(Center, BorderLayout.CENTER);
         this.setVisible(true);
+        
         chat_message.requestFocus();
-        if (chat_message.isFocusOwner()) {
+        if (chat_message.isFocusOwner()) 
+        {
             this.getRootPane().setDefaultButton(send_message);
         }
-        ActionListener Click = new ActionListener() {
+        
+        ActionListener Click = new ActionListener() 
+        {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) 
+            {
                 String message;
-                if (e.getSource().equals(send_message)) {
-                    if (!chat_message.getText().equals("")) {
+                if (e.getSource().equals(send_message)) 
+                {
+                    if (!chat_message.getText().equals("")) 
+                    {
                         displayMessage(chat_message.getText());
                         client.outgoingPackets(client.constructPacket(chat_message.getText(), Packet.pack_type.chat_message));
                         chat_message.setText("");
-                    } else {
+                    } 
+                    else 
+                    {
                         chat_message.setText("");
                     }
                 }
@@ -129,7 +158,8 @@ public class clientGUI extends JFrame {
         };
     }
 
-    public void displayMessage(String message) {
+    public void displayMessage(String message) 
+    {
         chat_text.append(message + "\n");
     }
 }
