@@ -10,11 +10,13 @@ import java.util.*;
 import Packet.Packet;
 import Packet.Packet.pack_type;
 import javax.swing.event.*;
+import jdk.nashorn.internal.runtime.StoredScript;
 
 public class ChatServer {
 
     private int max = 100;
-    private List<ClientThread> listClients = new ArrayList<ClientThread>();
+    private HashSet<ClientThread> clientsHash = new HashSet<ClientThread>();
+    private HashSet<String> storedUsernames = new HashSet<String>();
     private bannedMacs badMACS;
     private int connected = 0;
     protected String[] Inet_addr;
@@ -35,7 +37,7 @@ public class ChatServer {
                 // get_username_packet();
                 Socket Cli_socket = ssock.accept();
                 if (!badMACS.isMacBanned(badMACS.pullMac(Cli_socket))) {
-                    listClients.add(new ClientThread(Cli_socket, "", connected, badMACS.pullMac(Cli_socket), this));
+                    clientsHash.add(new ClientThread(Cli_socket, "", connected, badMACS.pullMac(Cli_socket), this));
                 } else {
                     Cli_socket.close();
                 }
@@ -52,8 +54,12 @@ public class ChatServer {
         return gui;
     }
 
-    public List<ClientThread> getClientsList() {
-        return listClients;
+    public HashSet<String> getStoredNames() {
+        return storedUsernames;
+    }
+
+    public HashSet<ClientThread> getHashSet() {
+        return clientsHash;
     }
 
     public void InitializeGui() {
@@ -61,19 +67,18 @@ public class ChatServer {
     }
 
     public void check_nm(ClientThread cli, String name) {
-        for (ClientThread client : listClients) {
+        if (storedUsernames.contains(name)) {
+            cli.set_usernm(name + connected);
+            return;
+        }
+        cli.set_usernm(name);
+        /* for (ClientThread client : listClients) {
             if (client.get_usernm().toLowerCase().equals(name.toLowerCase())) {
                 cli.set_usernm(name + connected);
                 return;
             }
         }
-        cli.set_usernm(name);
-    }
-
-    private void sendBanMessage(Socket sock) throws IOException {
-        //listClients.add(new ClientThread(sock, "", connected, badMACS.pullMac(sock), this));
-        ObjectOutputStream to_client = new ObjectOutputStream(sock.getOutputStream());
-        to_client.writeObject(constructPacket("Still Banned", pack_type.ban_pack));
+        cli.set_usernm(name); */
     }
 
     private boolean isBanned(Socket cli_sock) throws IOException {
@@ -84,7 +89,7 @@ public class ChatServer {
     }
 
     public ClientThread fetchUserbyName(String username) {
-        for (ClientThread client : listClients) {
+        for (ClientThread client : clientsHash) {
             if (client.get_usernm().equals(username)) {
                 return client;
             }
@@ -124,7 +129,7 @@ public class ChatServer {
         return pack;
     }
 
-    private void handleMessages(ClientThread cli, Packet pack) {
+    private void handleMessages(ClientThread cli, Packet pack) throws IOException {
         switch (pack.getPackType()) {
             case connected:
                 gui.displayMessage(cli.get_usernm() + " has connected!");
@@ -135,13 +140,25 @@ public class ChatServer {
             case disconnected:
                 gui.displayMessage(cli.get_usernm() + " has disconnected!");
                 break;
+            case whisper:
+                privateMessage(cli, pack);
+                break;
+        }
+    }
+
+    public void privateMessage(ClientThread cli, Packet pack) throws IOException {
+        String[] split = pack.getPayload().split("@"); // Seperates the username from the message
+        ClientThread targetClient = fetchUserbyName(split[0]);
+        if (clientsHash.contains(targetClient)) {
+            ObjectOutputStream to_client = targetClient.getOutputStream();
+            to_client.writeObject(constructPacket(split[1], pack_type.whisper));
         }
     }
 
     public void echo_chat(ClientThread client, Packet pack) throws IOException {
         handleMessages(client, pack);
         ObjectOutputStream to_client;
-        for (ClientThread cli : listClients) {
+        for (ClientThread cli : clientsHash) {
             if (client == null || (!client.get_usernm().equals(cli.get_usernm()))) {
                 try {
                     to_client = cli.getOutputStream();
@@ -150,13 +167,14 @@ public class ChatServer {
                             to_client.writeObject(constructPacket(client.get_usernm() + ": " + pack.getPayload(), pack_type.chat_message));
                             break;
                         case connected:
-                            to_client.writeObject(constructPacket(client.get_usernm() + " has connected!", pack_type.chat_message));
+                            to_client.writeObject(constructPacket(client.get_usernm(), pack_type.connected));
                             break;
                         case disconnected:
-                            to_client.writeObject(constructPacket(client.get_usernm() + " has disconnected!", pack_type.chat_message));
+                            to_client.writeObject(constructPacket(client.get_usernm(), pack_type.disconnected));
                             break;
                         case adminMessage:
                             to_client.writeObject(constructPacket("Administrator: " + pack.getPayload(), pack_type.adminMessage));
+                            break;
                     }
                 } catch (Exception e) {
                     gui.removeClient(cli);

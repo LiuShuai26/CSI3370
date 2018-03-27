@@ -135,16 +135,17 @@ public class serverGUI extends JFrame {
     }
 
     public void addClient(ClientThread cli) throws IOException {
-        if (server.getClientsList().size() >= 1) {
+        if (server.getHashSet().size() >= 1) {
             cli_box.removeItem(combo_holder);
         }
         cli_box.addItem(cli.get_usernm());
+        server.getStoredNames().add(cli.get_usernm());
     }
 
     public void removeClient(ClientThread cli) throws IOException {
-        server.getClientsList().remove(cli);
+        server.getHashSet().remove(cli);
         cli_box.removeItem(cli.get_usernm());
-        if (server.getClientsList().size() == 0 && cli_box.getItemCount() == 0) {
+        if (server.getHashSet().size() == 0 && cli_box.getItemCount() == 0) {
             cli_box.addItem(combo_holder);
             cli_box.setSelectedItem(combo_holder);
         }
