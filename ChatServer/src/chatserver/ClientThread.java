@@ -85,8 +85,8 @@ public class ClientThread extends JFrame implements Runnable {
             Packet inPacket;
             inPacket = (Packet) from_client.readObject(); // initial username
             chatServer.check_nm(this, inPacket.getPayload());
-            chatServer.getGui().addClient(this);
             chatServer.echo_chat(this, inPacket);
+            chatServer.getGui().addClient(this);
             while (true) { // handles the constant chat until they disconnect
                 try {
                     inPacket = (Packet) from_client.readObject();

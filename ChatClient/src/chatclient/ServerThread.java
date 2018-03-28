@@ -23,6 +23,7 @@ public class ServerThread extends JFrame implements Runnable {
 
     // variables for the thread
     private Thread server_thread;
+    private String userName;
     private Packet lastPack;
     private ObjectOutputStream to_server;
     private ObjectInputStream from_server;
@@ -41,6 +42,7 @@ public class ServerThread extends JFrame implements Runnable {
         my_ip = cli_ip[1];
         this.port = port;
         serv_ip = ip_addr;
+        userName = user_nm;
         serv_socket = sock;
         server_thread = new Thread(this);
         from_server = new ObjectInputStream(serv_socket.getInputStream());
@@ -54,7 +56,10 @@ public class ServerThread extends JFrame implements Runnable {
         Packet pack = new Packet(load, type);
         return pack;
     }
-
+    public String getUsername(){
+        return userName;
+    }
+    
     private void handlePackets(Packet pack) throws IOException {
         pack_type type = pack.getPackType();
         switch (type) {
@@ -75,13 +80,13 @@ public class ServerThread extends JFrame implements Runnable {
                 gui.addClient(pack.getPayload());
                 break;
             case whisper:
-                gui.displayMessage("(Whisper): " + pack.getPayload());
+                gui.displayMessage("From " + pack.getPayload());
                 break;
             case ban_pack:
                 Banned(pack.getPayload());
                 break;
             case listPack:
-                
+                gui.setList(pack.getClientList());
                 break;
             case disconnected:
                 gui.removeClient(pack.getPayload());
@@ -96,7 +101,6 @@ public class ServerThread extends JFrame implements Runnable {
         try {
             to_server.writeObject(pack);
         } catch (Exception e) {
-            System.out.println(e.toString() + " outgoing");
             JOptionPane warning = new JOptionPane("Oh No!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
             JOptionPane.showMessageDialog(warning, "The server has closed. Please Reconnect!");
             System.exit(3000);
