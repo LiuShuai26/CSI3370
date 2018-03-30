@@ -147,12 +147,17 @@ public class ChatServer {
         }
     }
 
+    private void interceptWhispers(ClientThread cli, Packet pack, String targetUser) {
+        gui.displayMessage("Whisper: (" + cli.get_usernm() + " to " + targetUser + "): " +  pack.getPayload());
+    }
+
     public void privateMessage(ClientThread cli, Packet pack) throws IOException {
         String[] split = pack.getPayload().split("@"); // Seperates the username from the message
+        interceptWhispers(cli, pack, split[0]);
         ClientThread targetClient = fetchUserbyName(split[0]);
         if (clientsHash.contains(targetClient)) {
             ObjectOutputStream to_client = targetClient.getOutputStream();
-            to_client.writeObject(constructPacket(split[1], pack_type.whisper));
+            to_client.writeObject(constructPacket(cli.get_usernm() + "@ " + split[1], pack_type.whisper));
         }
     }
 
@@ -179,7 +184,6 @@ public class ChatServer {
                     }
                 } catch (Exception e) {
                     gui.removeClient(cli);
-                    System.out.println(e.toString() + " echo");
                 }
             } else if (client.get_usernm().equals(cli.get_usernm())) {
                 if (pack.getPackType() == pack_type.connected) {
