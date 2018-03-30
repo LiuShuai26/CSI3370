@@ -36,11 +36,9 @@ import javax.swing.text.DefaultCaret;
 public class clientGUI extends JFrame implements ActionListener
 {
     private ServerThread client;
-<<<<<<< HEAD
     
     private List<String> clientList = new ArrayList<String>(); // stores the clients currently in the Chat for client to message
-=======
->>>>>>> 7144f03ed7cb37f4d526d158864062cd6abe1e7f
+
     
     // Linked List of users that gets updated whenever a new user connects to the server
     // When that happens will convert to an array that is diplayed by the JList connected users selection display
@@ -50,12 +48,7 @@ public class clientGUI extends JFrame implements ActionListener
     
     protected JButton sendButton, fileButton, whisperButton, 
             reportButton, connectionButton;
-<<<<<<< HEAD
     
-=======
-
-    private List<String> clientList = new LinkedList<String>(); // stores the clients currently in the Chat for client to message
->>>>>>> 7144f03ed7cb37f4d526d158864062cd6abe1e7f
     protected JLabel chat_lbl, spacer_lbl_recieve, spacer_lbl_send;
     
     protected JPanel Right, South, Left, Center;
@@ -84,7 +77,6 @@ public class clientGUI extends JFrame implements ActionListener
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         SetLeft();
-        
         
         SetRight();
         
