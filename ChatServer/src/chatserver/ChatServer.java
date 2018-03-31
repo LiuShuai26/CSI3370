@@ -64,7 +64,7 @@ public class ChatServer {
     }
 
     public void InitializeGui() {
-        gui = new serverGUI(this, Inet_addr[1], 400, 600);
+        gui = new serverGUI(this, Inet_addr[1], 360, 720);
     }
 
     public void check_nm(ClientThread cli, String name) {
