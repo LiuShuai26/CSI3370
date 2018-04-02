@@ -142,22 +142,47 @@ public class ChatServer {
                 gui.displayMessage(cli.get_usernm() + " has disconnected!");
                 break;
             case whisper:
-                privateMessage(cli, pack);
+                privateMessage(cli, pack, false);
+                break;
+            case reportPack:
+                receivedReport(cli, pack);
                 break;
         }
     }
 
+    private void receivedReport(ClientThread fromCli, Packet pack){
+        // Receives the report. The Packet will contain the client that is being 
+        // reported and who it is from.
+        ClientThread targetClient = fetchUserbyName(pack.getPayload());
+        targetClient.setReportCount(targetClient.getReportCount() + 1);
+        if(targetClient != null){
+            gui.addReportToClient(targetClient, targetClient.getReportCount(), fromCli.get_usernm());
+        }
+        
+        
+        //Send this to Server gui to update combobox
+    }
+    
     private void interceptWhispers(ClientThread cli, Packet pack, String targetUser) {
-        gui.displayMessage("Whisper: (" + cli.get_usernm() + " to " + targetUser + "): " +  pack.getPayload());
+        gui.displayMessage("Whisper: (" + cli.get_usernm() + " to " + targetUser + "): " + pack.getPayload());
     }
 
-    public void privateMessage(ClientThread cli, Packet pack) throws IOException {
+    public void privateMessage(ClientThread fromCli, Packet pack, boolean fromAdmin) throws IOException {
+        String userNm = "";
         String[] split = pack.getPayload().split("@"); // Seperates the username from the message
-        interceptWhispers(cli, pack, split[0]);
+        if (fromCli != null) {
+            interceptWhispers(fromCli, pack, split[0]);
+        }
+
         ClientThread targetClient = fetchUserbyName(split[0]);
         if (clientsHash.contains(targetClient)) {
             ObjectOutputStream to_client = targetClient.getOutputStream();
-            to_client.writeObject(constructPacket(cli.get_usernm() + "@ " + split[1], pack_type.whisper));
+            if(!fromAdmin){
+                userNm = fromCli.get_usernm();
+            }else{
+                userNm = "*Administrator*";
+            }
+            to_client.writeObject(constructPacket(userNm + "@ " + split[1], pack_type.whisper));
         }
     }
 
@@ -179,7 +204,7 @@ public class ChatServer {
                             to_client.writeObject(constructPacket(client.get_usernm(), pack_type.disconnected));
                             break;
                         case adminMessage:
-                            to_client.writeObject(constructPacket("Administrator: " + pack.getPayload(), pack_type.adminMessage));
+                            to_client.writeObject(constructPacket("*Administrator*: " + pack.getPayload(), pack_type.adminMessage));
                             break;
                     }
                 } catch (Exception e) {

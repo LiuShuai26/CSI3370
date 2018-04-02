@@ -23,6 +23,7 @@ public class ClientThread extends JFrame implements Runnable {
     private boolean game_run = false;
     private Socket Cli_socket;
     private int position;
+    private int reportCount = 0;
     protected ObjectInputStream from_client;
     private ObjectOutputStream to_client;
     // private DatagramPacket rec_pack;
@@ -69,6 +70,13 @@ public class ClientThread extends JFrame implements Runnable {
 
     public int get_position() {
         return position;
+    }
+    public int getReportCount(){
+        return reportCount;
+    }
+    
+    public void setReportCount(int repoCount){
+        reportCount = repoCount;
     }
 
     public void set_place(int index) {
