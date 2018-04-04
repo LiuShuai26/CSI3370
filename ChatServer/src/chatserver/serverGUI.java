@@ -63,7 +63,7 @@ public class serverGUI extends JFrame implements ActionListener
     protected JComboBox cli_box;
     
     protected JButton send_message, kick_client, banClient, whisperButton,
-                    saveButton;
+                    saveButton, fileButton;
     
     protected JScrollPane scroll, scroll_box, scroll_clients;
     
@@ -204,6 +204,7 @@ public class serverGUI extends JFrame implements ActionListener
         send_message = new JButton("Send");
         kick_client = new JButton("Kick");
         banClient = new JButton("Ban");
+        fileButton = new JButton("Select File");
         
         // Whisper Button needs to be implemented
         whisperButton = new JButton("Whisper");
@@ -224,6 +225,7 @@ public class serverGUI extends JFrame implements ActionListener
         
         south.add(send_message);
         south.add(scroll_box);
+        south.add(fileButton);
         
         west.add(cli_box);
         west.add(kick_client);
@@ -267,7 +269,7 @@ public class serverGUI extends JFrame implements ActionListener
         JTextArea display = new JTextArea(25, 25);
         display.setLineWrap(true);
         display.setText("No limit on Allowed Clients\nNo Limit on # of Characters in a Message\n"
-                        + "No Banned Phrases\nFile Sharing NOT ALLOWED");
+                        + "No Banned Phrases\nFile Sharing ALLOWED");
         
         optEast.add(label);
         optEast.add(display);
@@ -328,6 +330,7 @@ public class serverGUI extends JFrame implements ActionListener
         fileCheck.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         fileCheck.setHorizontalAlignment(SwingConstants.CENTER);
         fileCheck.setVerticalAlignment(SwingConstants.CENTER);
+        fileCheck.setSelected(true);
         
         JLabel phraseBan = new JLabel();
         phraseBan.setText("Banned Phrases");
