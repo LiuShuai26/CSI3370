@@ -20,12 +20,12 @@ import javax.swing.event.*;
  */
 public class bannedMacs {
     private List<String> Banned = new ArrayList<String>();
-    
+    private Socket cliSock;
     public bannedMacs(){
         // Instatiation
     }
     
-    public boolean checkMAC(String MAC){
+    public boolean isMacBanned(String MAC){
         for(String mac : Banned){
             if (MAC.equals(mac)){
                 return true;
@@ -33,7 +33,16 @@ public class bannedMacs {
         }
         return false;
     }
-    public void banMAC(String MAC){
-        Banned.add(MAC);
+    public void banMAC(Socket cliSocket) throws IOException{
+        Banned.add(pullMac(cliSocket));
+    }
+    public String pullMac(Socket cliSocket) throws IOException{
+        NetworkInterface network = NetworkInterface.getByInetAddress(cliSocket.getInetAddress());
+        byte[] mac = network.getHardwareAddress();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < mac.length; i++) {
+            sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+        }
+        return sb.toString();
     }
 }
