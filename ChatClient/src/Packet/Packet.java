@@ -28,6 +28,7 @@ public class Packet implements Serializable {
         adminMessage, // Message from administrator
         ban_pack, // Ban pack
         listPack, // packet with list
+        reportPack, // Report packet
     }
     
     public Packet(String payload, pack_type type){ // Creates the payload object

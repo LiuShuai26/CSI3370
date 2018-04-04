@@ -21,8 +21,14 @@ class ChatClient {
         String username = "";
         int port = 1234;
         try {
-            while (username.equals("") || username.length() < 3 || username.length() > 15) {
-                username = JOptionPane.showInputDialog("Please enter a username for the chat.");
+            while (true) {
+                username = JOptionPane.showInputDialog("Please enter a username for the chat.(3-15 Characters with only letters and numbers)");
+                if (username.equals("") || username.length() < 3 || username.length() > 15 || !username.matches("[a-zA-Z0-9]*")) {
+                    JOptionPane warning = new JOptionPane("Oh No!!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
+                    JOptionPane.showMessageDialog(warning, "Make sure your username is valid and doesn't contain '*' characters!");
+                }else{
+                    break;
+                }
             }
             while (ip.equals("")) {
                 ip = JOptionPane.showInputDialog("Please enter the IP Address of the Server you wish to connect to.");
@@ -40,11 +46,11 @@ class ChatClient {
             JOptionPane warning = new JOptionPane("Oh No!!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
             JOptionPane.showMessageDialog(warning, "You couldn't connect! The server might be down!");
             System.exit(1000);
-        }catch(SocketException se){
+        } catch (SocketException se) {
             JOptionPane warning = new JOptionPane("Oh No!!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
             JOptionPane.showMessageDialog(warning, "You've entered an invalid IP !");
             System.exit(1000);
-        }catch(EOFException eofe){
+        } catch (EOFException eofe) {
             JOptionPane warning = new JOptionPane("Oh No!!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_OPTION);
             JOptionPane.showMessageDialog(warning, "You are currently banned from the server.");
             System.exit(1000);

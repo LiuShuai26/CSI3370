@@ -38,7 +38,7 @@ import javax.swing.text.DefaultCaret;
 public class clientGUI extends JFrame implements ActionListener {
 
     private ServerThread client;
-    
+    private long lastReportTimer = 0;
     private List<String> clientList = new ArrayList<String>(); // stores the clients currently in the Chat for client to message
 
     // Linked List of users that gets updated whenever a new user connects to the server
@@ -65,7 +65,7 @@ public class clientGUI extends JFrame implements ActionListener {
         this.client = client;
         Initialize(width, height);
         chat_text.append("Welcome to the Chat!\n");
-        setTitle("Chat Client. Username/IP: " + client.getUsername() + "/" + ip );
+        setTitle("Chat Client. Username/IP: " + client.getUsername() + "/" + ip);
     }
 
     public void Initialize(int width, int height) {
@@ -76,7 +76,7 @@ public class clientGUI extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         SetLeft();
-        
+
         SetRight();
 
         SetBottom();
@@ -86,15 +86,13 @@ public class clientGUI extends JFrame implements ActionListener {
         this.setVisible(true);
 
         chat_message.requestFocus();
-        if (chat_message.isFocusOwner()) 
-        {
+        if (chat_message.isFocusOwner()) {
             this.getRootPane().setDefaultButton(sendButton);
         }
 
     }
 
-    private void SetLeft() 
-    {
+    private void SetLeft() {
         JLabel listTitle = new JLabel("Connected Users", JLabel.CENTER);
         listTitle.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 
@@ -138,8 +136,7 @@ public class clientGUI extends JFrame implements ActionListener {
         add(Left, BorderLayout.WEST);
     }
 
-    private void SetRight() 
-    {
+    private void SetRight() {
         Right = new JPanel();
 
         DefaultCaret caret_chat_wim;
@@ -161,8 +158,7 @@ public class clientGUI extends JFrame implements ActionListener {
         add(Right, BorderLayout.EAST);
     }
 
-    private void SetCenter() 
-    {
+    private void SetCenter() {
         JLabel spacer = new JLabel("      ");
         spacer.setFont(new Font("Times New Roman", Font.BOLD, 95));
 
@@ -182,8 +178,7 @@ public class clientGUI extends JFrame implements ActionListener {
         add(Center, BorderLayout.CENTER);
     }
 
-    private void SetBottom() 
-    {
+    private void SetBottom() {
         South = new JPanel();
 
         chat_message = new JTextArea(3, 27);
@@ -273,7 +268,7 @@ public class clientGUI extends JFrame implements ActionListener {
             if (selectedUser != null) { // prevents initial sending of whisper to noone
                 client.outgoingPackets(client.constructPacket(selectedUser + "@" + whisperMess, Packet.pack_type.whisper));
                 displayMessage("To " + selectedUser + "@" + whisperMess);
-            }else{
+            } else {
                 displayMessage("No Valid User Selected!");
             }
         }
@@ -313,6 +308,13 @@ public class clientGUI extends JFrame implements ActionListener {
                 // no user selected or none in list
             }
         } else if (e.getSource().equals(reportButton)) {
+            if (System.currentTimeMillis() - lastReportTimer >= 30000) {
+                client.outgoingPackets(client.constructPacket(getSelectedUsername(), Packet.pack_type.reportPack));
+                displayMessage("Thank you for the report!");
+                lastReportTimer = System.currentTimeMillis();
+            }else{
+                displayMessage("You must wait a total of 30 seconds between each report.");
+            }
 
         } else if (e.getSource().equals(connectionButton)) {
             if (connectionButton.getText().equals(disconnText)) {
