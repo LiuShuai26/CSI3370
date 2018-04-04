@@ -90,8 +90,10 @@ public class ChatServer {
     }
 
     public ClientThread fetchUserbyName(String username) {
+        String[] split;
+        split = username.split("\\(");
         for (ClientThread client : clientsHash) {
-            if (client.get_usernm().equals(username)) {
+            if (client.get_usernm().equals(split[0])) {
                 return client;
             }
         }

@@ -344,13 +344,13 @@ public class serverGUI extends JFrame implements ActionListener {
         if (server.getHashSet().size() >= 1) {
             cli_box.removeItem(combo_holder);
         }
-        cli_box.addItem(cli.get_usernm());
+        cli_box.addItem(cli.get_usernm() + "(" + cli.getReportCount() + ")");
         server.getStoredNames().add(cli.get_usernm());
     }
 
     public void removeClient(ClientThread cli) throws IOException {
         server.getHashSet().remove(cli);
-        cli_box.removeItem(cli.get_usernm() + " (" + cli.getReportCount() + ")");
+        cli_box.removeItem(cli.get_usernm() + "(" + cli.getReportCount() + ")");
         if (server.getHashSet().size() == 0 && cli_box.getItemCount() == 0) {
             cli_box.addItem(combo_holder);
             cli_box.setSelectedItem(combo_holder);
@@ -360,8 +360,8 @@ public class serverGUI extends JFrame implements ActionListener {
 
     public void addReportToClient(ClientThread targetClient, int count, String reportee){
         String userNm = targetClient.get_usernm();
-        cli_box.removeItem(userNm + " (" + (targetClient.getReportCount() - 1) + ")");
-        cli_box.addItem(userNm + " (" + count + ")");
+        cli_box.removeItem(userNm + "(" + (targetClient.getReportCount() - 1) + ")");
+        cli_box.addItem(userNm + "(" + count + ")");
         displayMessage(reportee + " has reported " + userNm + ".");
     }
     
