@@ -62,14 +62,7 @@ public class serverGUI extends JFrame implements ActionListener {
 
     protected JComboBox cli_box;
 
-    protected JButton send_message, kick_client, banClient, whisperButton,
-<<<<<<< HEAD
-                    saveButton, fileButton;
-    
-=======
-            saveButton;
-
->>>>>>> 72ddc22a3d699e1bb0a2da9199af21427abb91e5
+    protected JButton send_message, kick_client, banClient, whisperButton,saveButton, fileButton;
     protected JScrollPane scroll, scroll_box, scroll_clients;
 
     protected JTextArea message_box;
@@ -196,12 +189,7 @@ public class serverGUI extends JFrame implements ActionListener {
         send_message = new JButton("Send");
         kick_client = new JButton("Kick");
         banClient = new JButton("Ban");
-<<<<<<< HEAD
         fileButton = new JButton("Select File");
-        
-=======
-
->>>>>>> 72ddc22a3d699e1bb0a2da9199af21427abb91e5
         // Whisper Button needs to be implemented
         whisperButton = new JButton("Whisper");
 
@@ -220,12 +208,7 @@ public class serverGUI extends JFrame implements ActionListener {
 
         south.add(send_message);
         south.add(scroll_box);
-<<<<<<< HEAD
         south.add(fileButton);
-        
-=======
-
->>>>>>> 72ddc22a3d699e1bb0a2da9199af21427abb91e5
         west.add(cli_box);
         west.add(kick_client);
         west.add(banClient);
@@ -266,13 +249,7 @@ public class serverGUI extends JFrame implements ActionListener {
         JTextArea display = new JTextArea(25, 25);
         display.setLineWrap(true);
         display.setText("No limit on Allowed Clients\nNo Limit on # of Characters in a Message\n"
-<<<<<<< HEAD
                         + "No Banned Phrases\nFile Sharing ALLOWED");
-        
-=======
-                + "No Banned Phrases\nFile Sharing NOT ALLOWED");
-
->>>>>>> 72ddc22a3d699e1bb0a2da9199af21427abb91e5
         optEast.add(label);
         optEast.add(display);
         optEast.add(spacer1);
@@ -328,12 +305,7 @@ public class serverGUI extends JFrame implements ActionListener {
         fileCheck.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         fileCheck.setHorizontalAlignment(SwingConstants.CENTER);
         fileCheck.setVerticalAlignment(SwingConstants.CENTER);
-<<<<<<< HEAD
         fileCheck.setSelected(true);
-        
-=======
-
->>>>>>> 72ddc22a3d699e1bb0a2da9199af21427abb91e5
         JLabel phraseBan = new JLabel();
         phraseBan.setText("Banned Phrases");
         phraseBan.setFont(new Font("Times New Roman", Font.PLAIN, 18));
