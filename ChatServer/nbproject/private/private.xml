@@ -2,13 +2,11 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-<<<<<<< HEAD
-        <group/>
-=======
         <group>
-            <file>file:/C:/Users/mike/Documents/GitHub/CSI3370/ChatServer/src/chatserver/ClientThread.java</file>
-            <file>file:/C:/Users/mike/Documents/GitHub/CSI3370/ChatServer/src/chatserver/ChatServer.java</file>
+            <file>file:/C:/Users/Michael%20Muller/Documents/GitHub/CSI3370/ChatServer/src/chatserver/serverGUI.java</file>
+            <file>file:/C:/Users/Michael%20Muller/Documents/GitHub/CSI3370/ChatServer/src/chatserver/ClientThread.java</file>
+            <file>file:/C:/Users/Michael%20Muller/Documents/GitHub/CSI3370/ChatServer/src/chatserver/MainServer.java</file>
+            <file>file:/C:/Users/Michael%20Muller/Documents/GitHub/CSI3370/ChatServer/src/chatserver/ChatServer.java</file>
         </group>
->>>>>>> c6ff519a8fa924d12e753e81dc58f0e2e91666e3
     </open-files>
 </project-private>
