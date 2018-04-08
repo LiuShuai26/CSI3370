@@ -3,10 +3,19 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/C:/Users/Michael%20Muller/Documents/GitHub/CSI3370/ChatServer/src/chatserver/serverGUI.java</file>
             <file>file:/C:/Users/Michael%20Muller/Documents/GitHub/CSI3370/ChatServer/src/chatserver/ClientThread.java</file>
             <file>file:/C:/Users/Michael%20Muller/Documents/GitHub/CSI3370/ChatServer/src/chatserver/MainServer.java</file>
             <file>file:/C:/Users/Michael%20Muller/Documents/GitHub/CSI3370/ChatServer/src/chatserver/ChatServer.java</file>
+=======
+            <file>file:/C:/Users/mike/Documents/GitHub/CSI3370/ChatServer/src/chatserver/ClientThread.java</file>
+            <file>file:/C:/Users/mike/Documents/GitHub/CSI3370/ChatServer/src/chatserver/ChatServer.java</file>
+            <file>file:/C:/Users/mike/Documents/GitHub/CSI3370/ChatServer/src/chatserver/bannedMacs.java</file>
+            <file>file:/C:/Users/mike/Documents/GitHub/CSI3370/ChatServer/src/chatserver/serverGUI.java</file>
+            <file>file:/C:/Users/mike/Documents/GitHub/CSI3370/ChatServer/src/FTP/FTPMain.java</file>
+            <file>file:/C:/Users/mike/Documents/GitHub/CSI3370/ChatServer/src/Packet/Packet.java</file>
+>>>>>>> 244ec30b08be95f9e3bce20fd5cfb6c9a05ded3e
         </group>
     </open-files>
 </project-private>

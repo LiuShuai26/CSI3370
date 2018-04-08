@@ -3,7 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/C:/Users/Michael%20Muller/Documents/GitHub/CSI3370/ChatClient/src/chatclient/ChatClient.java</file>
+=======
+            <file>file:/C:/Users/mike/Documents/GitHub/CSI3370/ChatClient/src/chatclient/clientGUI.java</file>
+            <file>file:/C:/Users/mike/Documents/GitHub/CSI3370/ChatClient/src/chatclient/ServerThread.java</file>
+            <file>file:/C:/Users/mike/Documents/GitHub/CSI3370/ChatClient/src/chatclient/ChatClient.java</file>
+            <file>file:/C:/Users/mike/Documents/GitHub/CSI3370/ChatClient/src/chatclient/MainClient.java</file>
+>>>>>>> 244ec30b08be95f9e3bce20fd5cfb6c9a05ded3e
         </group>
     </open-files>
 </project-private>
