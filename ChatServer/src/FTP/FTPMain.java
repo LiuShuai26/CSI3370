@@ -8,9 +8,10 @@ package FTP;
 /**
  *
  * @author mike
- * */
-
-import org.apache.commons.net.ftp.FTPFile;
+ *
+ */
+import org.apache.commons.net.*;
+import org.apache.commons.net.ftp.*;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -24,32 +25,29 @@ import java.io.IOException;
 
 public class FTPMain implements ActionListener {
 
-
     //init--------------------------------
-    static FTPFile[] file;
-    static String FTP = "172.20.10.12";
-    static String username = "userx";
-    static String password = "123456";
+    public FTPFile[] file;
+    public String FTP = "172.20.10.12";
+    public String username = "userx";
+    public String password = "123456";
     //init--------------------------------
-
 
     private JFrame frame;
     private JTable table;
     private JScrollPane scrollPane;
     public Ftp_by_apache ftp;
 
-    public static Ftp_by_apache getFtp() {
+    public Ftp_by_apache getFtp() {
         return ftp;
     }
 
     /**
-     * Launch the application.
+     * Create the application.
      */
-    public static void main(String[] args) {
-
+    public FTPMain() {
+        initialize();
         ftp = new Ftp_by_apache(FTP, username, password);
         file = ftp.getAllFile();
-
 
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -61,14 +59,6 @@ public class FTPMain implements ActionListener {
                 }
             }
         });
-
-    }
-
-    /**
-     * Create the application.
-     */
-    public FTPMain() {
-        initialize();
     }
 
     /**
@@ -119,7 +109,6 @@ public class FTPMain implements ActionListener {
         upload.setBounds(195, 15, 82, 23);
         frame.getContentPane().add(upload);
 
-
         //refresh button
         JButton refresh = new JButton("Refresh");
         refresh.addActionListener(new ActionListener() {
@@ -138,7 +127,6 @@ public class FTPMain implements ActionListener {
         refresh.setBounds(312, 15, 82, 23);
         frame.getContentPane().add(refresh);
         //refresh button--------------------------------------------------
-
 
         //show information(FTP username)-----------------------------------------------
         JLabel lblNewLabel = new JLabel("FTP ip:");
@@ -160,11 +148,9 @@ public class FTPMain implements ActionListener {
 
         showTable();
 
-
-
     }
 
-    private void showTable(){
+    private void showTable() {
         //table data init  read files in ftp
 
         String[][] data1 = new String[file.length][4];
@@ -180,7 +166,6 @@ public class FTPMain implements ActionListener {
             data1[row][2] = file[row].getSize() + "";
             data1[row][3] = "Download";
         }
-
 
         //table name-----------------------------------------------------
         String[] columnNames = {"file", "type", "size(kb)", ""};
@@ -204,7 +189,7 @@ public class FTPMain implements ActionListener {
         //table.setToolTipText("\u53EF\u4EE5\u70B9\u51FB\u4E0B\u8F7D");
 
         //table button init(button in last row)--------------------
-        GUI buttonsColumn = new GUI(table, 3);
+        Gui buttonsColumn = new Gui(table, 3);
 
     }
 

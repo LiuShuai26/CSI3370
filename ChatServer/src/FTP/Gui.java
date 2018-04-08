@@ -1,6 +1,6 @@
 package FTP;
 
-import org.apache.commons.net.ftp.FTPFile;
+import FTP.*;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -65,6 +65,7 @@ public class Gui extends AbstractCellEditor implements
         fireEditingStopped();
 //        System.out.println(e.getActionCommand() + "   :    "
 //                + table.getSelectedRow());
+        
         FTPFile[] file1 = FTPMain.getFtp().getAllFile();
         String from_file_name = file1[table.getSelectedRow()].getName();
         int result = 0;
