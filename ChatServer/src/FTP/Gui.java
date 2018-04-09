@@ -1,6 +1,6 @@
 package FTP;
 
-import FTP.*;
+import org.apache.commons.net.ftp.FTPFile;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;

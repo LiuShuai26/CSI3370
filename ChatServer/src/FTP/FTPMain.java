@@ -10,6 +10,7 @@ package FTP;
  * @author mike
  *
  */
+import chatserver.serverGUI;
 import org.apache.commons.net.*;
 import org.apache.commons.net.ftp.*;
 
@@ -26,7 +27,7 @@ import java.io.IOException;
 public class FTPMain implements ActionListener {
 
     //init--------------------------------
-    public FTPFile[] file;
+    public static FTPFile[] file;
     public String FTP = "172.20.10.12";
     public String username = "userx";
     public String password = "123456";
@@ -35,25 +36,25 @@ public class FTPMain implements ActionListener {
     private JFrame frame;
     private JTable table;
     private JScrollPane scrollPane;
-    public Ftp_by_apache ftp;
+    public static Ftp_by_apache ftp;
 
-    public Ftp_by_apache getFtp() {
+    public static Ftp_by_apache getFtp() {
         return ftp;
     }
 
     /**
      * Create the application.
      */
-    public FTPMain() {
-        initialize();
-        ftp = new Ftp_by_apache(FTP, username, password);
-        file = ftp.getAllFile();
+    public FTPMain(serverGUI gui) {
 
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    FTPMain window = new FTPMain();
-                    window.frame.setVisible(true);
+
+                    ftp = new Ftp_by_apache(FTP, username, password);
+                    file = ftp.getAllFile();
+                    initialize();
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -71,6 +72,7 @@ public class FTPMain implements ActionListener {
         frame.setBounds(100, 100, 470, 534);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
+        frame.setVisible(true);
 
         //upload button--------------------------------------------------
         JButton upload = new JButton("Upload");
