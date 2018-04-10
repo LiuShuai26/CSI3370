@@ -14,11 +14,11 @@ import java.io.File;
 import java.io.IOException;
 
 public class Gui extends AbstractCellEditor implements
-        TableCellRenderer, TableCellEditor, ActionListener {
-    JTable table;
-    JButton renderButton;
-    JButton editButton;
-    String text;
+     TableCellRenderer, TableCellEditor, ActionListener {
+    public JTable table;
+    public JButton renderButton;
+    public JButton editButton;
+    public String text;
 
     public Gui(JTable table, int column) {
         super();
@@ -60,7 +60,10 @@ public class Gui extends AbstractCellEditor implements
     public Object getCellEditorValue() {
         return text;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> badf51083a539f6b413e8fbcac344e15513dc6df
     @Override
     public void actionPerformed(ActionEvent e) {
         fireEditingStopped();

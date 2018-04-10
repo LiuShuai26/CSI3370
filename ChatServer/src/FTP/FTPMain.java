@@ -27,8 +27,12 @@ import java.io.IOException;
 public class FTPMain implements ActionListener {
 
     //init--------------------------------
+<<<<<<< HEAD
     public FTPFile[] file;
     public serverGUI servGui;
+=======
+    public static FTPFile[] file;
+>>>>>>> badf51083a539f6b413e8fbcac344e15513dc6df
     public String FTP = "172.20.10.12";
     public String username = "userx";
     public String password = "123456";
@@ -37,9 +41,9 @@ public class FTPMain implements ActionListener {
     private JFrame frame;
     private JTable table;
     private JScrollPane scrollPane;
-    public Ftp_by_apache ftp;
+    public static Ftp_by_apache ftp;
 
-    public Ftp_by_apache getFtp() {
+    public static Ftp_by_apache getFtp() {
         return ftp;
     }
 
@@ -47,15 +51,25 @@ public class FTPMain implements ActionListener {
      * Create the application.
      */
     public FTPMain(serverGUI gui) {
+<<<<<<< HEAD
         this.servGui = gui;
         ftp = new Ftp_by_apache(FTP, username, password);
         file = ftp.getAllFile();
+=======
+>>>>>>> badf51083a539f6b413e8fbcac344e15513dc6df
 
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
 
+<<<<<<< HEAD
                     initialize();
+=======
+                    ftp = new Ftp_by_apache(FTP, username, password);
+                    file = ftp.getAllFile();
+                    initialize();
+
+>>>>>>> badf51083a539f6b413e8fbcac344e15513dc6df
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -73,6 +87,7 @@ public class FTPMain implements ActionListener {
         frame.setBounds(100, 100, 470, 534);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.getContentPane().setLayout(null);
+        frame.setVisible(true);
 
         //upload button--------------------------------------------------
         JButton upload = new JButton("Upload");

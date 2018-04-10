@@ -26,19 +26,23 @@ import java.io.IOException;
 public class FTPMain implements ActionListener {
 
     //init--------------------------------
-    static FTPFile[] file;
-    static String FTP = "172.20.10.12";
-    static String username = "userx";
-    static String password = "123456";
+    public FTPFile[] file;
+    public static String FTP = "172.20.10.12";
+    public String username = "userx";
+    public String password = "123456";
     //init--------------------------------
 
     private JFrame frame;
     private JTable table;
     private JScrollPane scrollPane;
+<<<<<<< HEAD
     public Ftp_by_apache ftp;
     public clientGUI gui;
+=======
+    public static Ftp_by_apache ftp;
+>>>>>>> badf51083a539f6b413e8fbcac344e15513dc6df
 
-    public Ftp_by_apache getFtp() {
+    public static Ftp_by_apache getFtp() {
         return ftp;
     }
 

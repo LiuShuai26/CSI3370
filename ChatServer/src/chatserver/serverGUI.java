@@ -5,6 +5,7 @@
  */
 package chatserver;
 
+import FTP.FTPMain;
 import Packet.Packet;
 import FTP.*;
 import java.awt.BorderLayout;
@@ -69,8 +70,14 @@ public class serverGUI extends JFrame implements ActionListener {
     protected JTextArea message_box;
 
     protected JTabbedPane serverTabs;
+<<<<<<< HEAD
     public Boolean ftpRunning = false;
     public FTPMain ftp;
+=======
+    
+    public boolean fileRunning = false;
+    private FTP.FTPMain ftp;
+>>>>>>> badf51083a539f6b413e8fbcac344e15513dc6df
 
     public serverGUI(ChatServer serv, String ip, int height, int width) {
         server = serv;
@@ -202,6 +209,7 @@ public class serverGUI extends JFrame implements ActionListener {
         kick_client.addActionListener(this);
         banClient.addActionListener(this);
         whisperButton.addActionListener(this);
+        fileButton.addActionListener(this);
 
         west = new JPanel();
         south = new JPanel();
@@ -406,9 +414,15 @@ public class serverGUI extends JFrame implements ActionListener {
             } else if (e.getSource() == whisperButton) {
                 whisperClient();
             }else if (e.getSource() == fileButton){
+<<<<<<< HEAD
                 // CAll the FTP main
                 if(ftp != null){
                 ftp = new FTPMain(this);
+=======
+                if(!fileRunning || ftp == null){
+                    ftp = new FTPMain(this);
+                    fileRunning = true;
+>>>>>>> badf51083a539f6b413e8fbcac344e15513dc6df
                 }
             }
         } catch (Exception er) {
