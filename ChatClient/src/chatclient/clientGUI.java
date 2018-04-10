@@ -6,6 +6,7 @@
 package chatclient;
 
 import Packet.Packet;
+import FTP.*;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import com.sun.javafx.scene.control.skin.VirtualFlow.ArrayLinkedList;
 import java.awt.BorderLayout;
@@ -60,6 +61,7 @@ public class clientGUI extends JFrame implements ActionListener {
 
     private String disconnText = "Disconnect";
     private String connText = "Connect";
+    public FTPMain ftp;
 
     public clientGUI(ServerThread client, String ip, int height, int width) {
         this.client = client;
@@ -298,7 +300,9 @@ public class clientGUI extends JFrame implements ActionListener {
                 chat_message.setText("");
             }
         } else if (e.getSource().equals(fileButton)) {
-            // Needs to get a file to send
+            if(ftp != null){
+                ftp = new FTPMain(this);
+                }
         } else if (e.getSource().equals(whisperButton)) {
             // Continue to work on Friday
             try {

@@ -10,6 +10,7 @@ package FTP;
  * @author mike
  *
  */
+import chatserver.serverGUI;
 import org.apache.commons.net.*;
 import org.apache.commons.net.ftp.*;
 
@@ -27,6 +28,7 @@ public class FTPMain implements ActionListener {
 
     //init--------------------------------
     public FTPFile[] file;
+    public serverGUI servGui;
     public String FTP = "172.20.10.12";
     public String username = "userx";
     public String password = "123456";
@@ -44,16 +46,16 @@ public class FTPMain implements ActionListener {
     /**
      * Create the application.
      */
-    public FTPMain() {
-        initialize();
+    public FTPMain(serverGUI gui) {
+        this.servGui = gui;
         ftp = new Ftp_by_apache(FTP, username, password);
         file = ftp.getAllFile();
 
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    FTPMain window = new FTPMain();
-                    window.frame.setVisible(true);
+
+                    initialize();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -69,7 +71,7 @@ public class FTPMain implements ActionListener {
         //frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/com/sun/java/swing/plaf/windows/icons/UpFolder.gif")));
         frame.setTitle("FTP");
         frame.setBounds(100, 100, 470, 534);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
         //upload button--------------------------------------------------
