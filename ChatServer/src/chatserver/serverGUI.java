@@ -411,12 +411,18 @@ public class serverGUI extends JFrame implements ActionListener {
                 whisperClient();
             } else if (e.getSource() == fileButton) {
                 // CAll the FTP main
+<<<<<<< HEAD
                 if (!fileRunning) {
                     ftp = new FTPMain(this);
                     fileRunning = true;
                     System.out.println("ftp open success!");
 
 
+=======
+                if (!fileRunning || ftp == null) {
+                    ftp = new FTPMain(this);
+                    fileRunning = true;
+>>>>>>> 6db80b3e60e6ce6b240ae1ccc9cdfc1a017558c0
                 }
 
             }

@@ -48,15 +48,13 @@ public class FTPMain implements ActionListener {
      */
     public FTPMain(serverGUI gui) {
         this.servGui = gui;
-        ftp = new Ftp_by_apache(FTP, username, password);
-        file = ftp.getAllFile();
-
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    initialize();
+
                     ftp = new Ftp_by_apache(FTP, username, password);
                     file = ftp.getAllFile();
+
                     initialize();
 
                 } catch (Exception e) {
