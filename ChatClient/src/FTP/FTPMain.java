@@ -20,6 +20,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 
@@ -27,8 +29,8 @@ public class FTPMain implements ActionListener {
 
     //init--------------------------------
     public FTPFile[] file;
-    public static String FTP = "172.20.10.12";
-    public String username = "userx";
+    public static String FTP = "172.20.10.2";
+    public String username = "Userx";
     public String password = "123456";
     //init--------------------------------
 
@@ -67,7 +69,7 @@ public class FTPMain implements ActionListener {
         frame.setBounds(100, 100, 470, 534);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.getContentPane().setLayout(null);
-
+        frame.setVisible(true);
         //upload button--------------------------------------------------
         JButton upload = new JButton("Upload");
         upload.setFont(new Font("??", Font.PLAIN, 12));
@@ -143,7 +145,14 @@ public class FTPMain implements ActionListener {
         //show information-----------------------------------------------
 
         showTable();
-
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent we){
+                ftp.close_connection();
+                gui.fileRunning = false;
+                //System.exit(0);
+            }
+        });
     }
 
     private void showTable() {

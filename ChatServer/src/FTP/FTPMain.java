@@ -21,6 +21,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 
@@ -29,8 +31,8 @@ public class FTPMain implements ActionListener {
     //init--------------------------------
     public serverGUI servGui;
     public static FTPFile[] file;
-    public String FTP = "172.20.10.12";
-    public String username = "userx";
+    public String FTP = "35.50.26.46";
+    public String username = "Userx";
     public String password = "123456";
     //init--------------------------------
 
@@ -48,13 +50,14 @@ public class FTPMain implements ActionListener {
      */
     public FTPMain(serverGUI gui) {
         this.servGui = gui;
+//        ftp = new Ftp_by_apache(FTP, username, password);
+//        file = ftp.getAllFile();
+
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-
                     ftp = new Ftp_by_apache(FTP, username, password);
                     file = ftp.getAllFile();
-
                     initialize();
 
                 } catch (Exception e) {
@@ -83,7 +86,7 @@ public class FTPMain implements ActionListener {
         upload.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 //upload button trigger------------------------------------
-                System.out.println("Uploading?????");
+                //System.out.println("Uploading?????");
                 int result = 0;
                 File file = null;
                 String path = null;
@@ -117,7 +120,7 @@ public class FTPMain implements ActionListener {
         JButton refresh = new JButton("Refresh");
         refresh.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                System.out.println("Refreshing?????");
+                //System.out.println("Refreshing?????");
                 frame.getContentPane().remove(scrollPane);
                 frame.validate();
                 frame.repaint();
@@ -151,6 +154,14 @@ public class FTPMain implements ActionListener {
         //show information-----------------------------------------------
 
         showTable();
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent we){
+                ftp.close_connection();
+                servGui.fileRunning = false;
+                //System.exit(0);
+            }
+        });
 
     }
 
