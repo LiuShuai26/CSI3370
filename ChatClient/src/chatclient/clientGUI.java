@@ -7,8 +7,8 @@ package chatclient;
 
 import Packet.Packet;
 import FTP.*;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
-import com.sun.javafx.scene.control.skin.VirtualFlow.ArrayLinkedList;
+//import com.sun.javafx.scene.control.skin.VirtualFlow;
+//import com.sun.javafx.scene.control.skin.VirtualFlow.ArrayLinkedList;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -62,6 +62,8 @@ public class clientGUI extends JFrame implements ActionListener {
     private String disconnText = "Disconnect";
     private String connText = "Connect";
     public FTPMain ftp;
+
+    public boolean fileRunning = false;
 
     public clientGUI(ServerThread client, String ip, int height, int width) {
         this.client = client;
@@ -290,7 +292,7 @@ public class clientGUI extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        System.out.println("any action?");
         if (e.getSource().equals(sendButton)) {
             if (!chat_message.getText().equals("")) {
                 displayMessage(chat_message.getText());
@@ -299,10 +301,6 @@ public class clientGUI extends JFrame implements ActionListener {
             } else {
                 chat_message.setText("");
             }
-        } else if (e.getSource().equals(fileButton)) {
-            if(ftp != null){
-                ftp = new FTPMain(this);
-                }
         } else if (e.getSource().equals(whisperButton)) {
             // Continue to work on Friday
             try {
@@ -325,6 +323,12 @@ public class clientGUI extends JFrame implements ActionListener {
                 connectionButton.setText(connText);
             } else if (connectionButton.getText().equals(connText)) {
                 connectionButton.setText(disconnText);
+            }
+        } else if (e.getSource().equals(fileButton)) {
+            if (!fileRunning) {
+                ftp = new FTPMain(this);
+                fileRunning = true;
+                System.out.println("ftp open success!");
             }
         }
     }
