@@ -64,7 +64,6 @@ public class clientGUI extends JFrame implements ActionListener {
     public FTPMain ftp;
     public boolean fileRunning = false;
 
-    public boolean fileRunning = false;
 
     public clientGUI(ServerThread client, String ip, int height, int width) {
         this.client = client;
@@ -302,14 +301,11 @@ public class clientGUI extends JFrame implements ActionListener {
             } else {
                 chat_message.setText("");
             }
-<<<<<<< HEAD
-=======
         } else if (e.getSource().equals(fileButton)) {
             if (!fileRunning || ftp == null) {
                 ftp = new FTPMain(this);
                 fileRunning = true;
             }
->>>>>>> 6db80b3e60e6ce6b240ae1ccc9cdfc1a017558c0
         } else if (e.getSource().equals(whisperButton)) {
             // Continue to work on Friday
             try {
