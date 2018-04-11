@@ -60,10 +60,6 @@ public class Gui extends AbstractCellEditor implements
     public Object getCellEditorValue() {
         return text;
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> badf51083a539f6b413e8fbcac344e15513dc6df
     @Override
     public void actionPerformed(ActionEvent e) {
         fireEditingStopped();

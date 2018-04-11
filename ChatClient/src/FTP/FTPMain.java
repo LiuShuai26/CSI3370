@@ -35,12 +35,8 @@ public class FTPMain implements ActionListener {
     private JFrame frame;
     private JTable table;
     private JScrollPane scrollPane;
-<<<<<<< HEAD
-    public Ftp_by_apache ftp;
-    public clientGUI gui;
-=======
     public static Ftp_by_apache ftp;
->>>>>>> badf51083a539f6b413e8fbcac344e15513dc6df
+    public clientGUI gui;
 
     public static Ftp_by_apache getFtp() {
         return ftp;

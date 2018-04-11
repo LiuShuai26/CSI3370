@@ -64,20 +64,16 @@ public class serverGUI extends JFrame implements ActionListener {
 
     protected JComboBox cli_box;
 
-    protected JButton send_message, kick_client, banClient, whisperButton,saveButton, fileButton;
+    protected JButton send_message, kick_client, banClient, whisperButton, saveButton, fileButton;
     protected JScrollPane scroll, scroll_box, scroll_clients;
 
     protected JTextArea message_box;
 
     protected JTabbedPane serverTabs;
-<<<<<<< HEAD
     public Boolean ftpRunning = false;
     public FTPMain ftp;
-=======
-    
+
     public boolean fileRunning = false;
-    private FTP.FTPMain ftp;
->>>>>>> badf51083a539f6b413e8fbcac344e15513dc6df
 
     public serverGUI(ChatServer serv, String ip, int height, int width) {
         server = serv;
@@ -260,7 +256,7 @@ public class serverGUI extends JFrame implements ActionListener {
         JTextArea display = new JTextArea(25, 25);
         display.setLineWrap(true);
         display.setText("No limit on Allowed Clients\nNo Limit on # of Characters in a Message\n"
-                        + "No Banned Phrases\nFile Sharing ALLOWED");
+                + "No Banned Phrases\nFile Sharing ALLOWED");
         optEast.add(label);
         optEast.add(display);
         optEast.add(spacer1);
@@ -366,13 +362,13 @@ public class serverGUI extends JFrame implements ActionListener {
         cli_box.removeItem(cli.get_usernm());
     }
 
-    public void addReportToClient(ClientThread targetClient, int count, String reportee){
+    public void addReportToClient(ClientThread targetClient, int count, String reportee) {
         String userNm = targetClient.get_usernm();
         cli_box.removeItem(userNm + "(" + (targetClient.getReportCount() - 1) + ")");
         cli_box.addItem(userNm + "(" + count + ")");
         displayMessage(reportee + " has reported " + userNm + ".");
     }
-    
+
     public void displayMessage(String message) {
         chat_area.append(message + "\n");
     }
@@ -413,16 +409,14 @@ public class serverGUI extends JFrame implements ActionListener {
                 server.ban(server.fetchUserbyName(cli_box.getSelectedItem().toString()), reason);
             } else if (e.getSource() == whisperButton) {
                 whisperClient();
-            }else if (e.getSource() == fileButton){
-<<<<<<< HEAD
+            } else if (e.getSource() == fileButton) {
                 // CAll the FTP main
-                if(ftp != null){
-                ftp = new FTPMain(this);
-=======
-                if(!fileRunning || ftp == null){
+                if (ftp != null) {
                     ftp = new FTPMain(this);
-                    fileRunning = true;
->>>>>>> badf51083a539f6b413e8fbcac344e15513dc6df
+                    if (!fileRunning || ftp == null) {
+                        ftp = new FTPMain(this);
+                        fileRunning = true;
+                    }
                 }
             }
         } catch (Exception er) {
