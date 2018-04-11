@@ -43,12 +43,12 @@ public class FTPMain implements ActionListener {
     }
 
     public FTPMain(clientGUI gui) {
-        ftp = new Ftp_by_apache(FTP, username, password);
-        file = ftp.getAllFile();
         this.gui = gui;
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
+                    ftp = new Ftp_by_apache(FTP, username, password);
+                    file = ftp.getAllFile();
                     initialize();
                 } catch (Exception e) {
                     e.printStackTrace();

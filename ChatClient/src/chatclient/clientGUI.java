@@ -62,6 +62,7 @@ public class clientGUI extends JFrame implements ActionListener {
     private String disconnText = "Disconnect";
     private String connText = "Connect";
     public FTPMain ftp;
+    public boolean fileRunning = false;
 
     public clientGUI(ServerThread client, String ip, int height, int width) {
         this.client = client;
@@ -300,9 +301,10 @@ public class clientGUI extends JFrame implements ActionListener {
                 chat_message.setText("");
             }
         } else if (e.getSource().equals(fileButton)) {
-            if(ftp != null){
+            if (!fileRunning || ftp == null) {
                 ftp = new FTPMain(this);
-                }
+                fileRunning = true;
+            }
         } else if (e.getSource().equals(whisperButton)) {
             // Continue to work on Friday
             try {
@@ -316,7 +318,7 @@ public class clientGUI extends JFrame implements ActionListener {
                 client.outgoingPackets(client.constructPacket(getSelectedUsername(), Packet.pack_type.reportPack));
                 displayMessage("Thank you for the report!");
                 lastReportTimer = System.currentTimeMillis();
-            }else{
+            } else {
                 displayMessage("You must wait a total of 30 seconds between each report.");
             }
 

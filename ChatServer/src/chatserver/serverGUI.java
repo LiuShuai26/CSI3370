@@ -411,12 +411,9 @@ public class serverGUI extends JFrame implements ActionListener {
                 whisperClient();
             } else if (e.getSource() == fileButton) {
                 // CAll the FTP main
-                if (ftp != null) {
+                if (!fileRunning || ftp == null) {
                     ftp = new FTPMain(this);
-                    if (!fileRunning || ftp == null) {
-                        ftp = new FTPMain(this);
-                        fileRunning = true;
-                    }
+                    fileRunning = true;
                 }
             }
         } catch (Exception er) {
