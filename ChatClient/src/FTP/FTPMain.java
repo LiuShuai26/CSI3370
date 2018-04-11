@@ -13,6 +13,7 @@ package FTP;
 import org.apache.commons.net.ftp.FTPFile;
 
 import javax.swing.*;
+import chatclient.*;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
@@ -35,27 +36,25 @@ public class FTPMain implements ActionListener {
     private JTable table;
     private JScrollPane scrollPane;
     public static Ftp_by_apache ftp;
+    public clientGUI gui;
 
     public static Ftp_by_apache getFtp() {
         return ftp;
     }
 
-    public FTPMain() {
+    public FTPMain(clientGUI gui) {
         ftp = new Ftp_by_apache(FTP, username, password);
         file = ftp.getAllFile();
-
+        this.gui = gui;
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    FTPMain window = new FTPMain();
-                    window.frame.setVisible(true);
+                    initialize();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
-        initialize();
-
     }
 
     /**
@@ -66,7 +65,7 @@ public class FTPMain implements ActionListener {
         //frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/com/sun/java/swing/plaf/windows/icons/UpFolder.gif")));
         frame.setTitle("FTP");
         frame.setBounds(100, 100, 470, 534);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
         //upload button--------------------------------------------------

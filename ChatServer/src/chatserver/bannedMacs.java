@@ -37,13 +37,8 @@ public class bannedMacs {
         Banned.add(pullMac(cliSocket));
     }
     public String pullMac(Socket cliSocket) throws IOException{
-//        InetAddress inet = cliSocket.getInetAddress();
-//        NetworkInterface network = NetworkInterface.getByInetAddress(inet);
-//        byte[] mac = network.getHardwareAddress();
-//        StringBuilder sb = new StringBuilder();
-//        for (int i = 0; i < mac.length; i++) {
-//            sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
-//        }
-        return null;
+        InetAddress inet = cliSocket.getInetAddress();
+        
+        return inet.toString();
     }
 }

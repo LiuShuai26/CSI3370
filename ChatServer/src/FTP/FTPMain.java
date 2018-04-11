@@ -27,6 +27,7 @@ import java.io.IOException;
 public class FTPMain implements ActionListener {
 
     //init--------------------------------
+    public serverGUI servGui;
     public static FTPFile[] file;
     public String FTP = "172.20.10.12";
     public String username = "userx";
@@ -46,11 +47,14 @@ public class FTPMain implements ActionListener {
      * Create the application.
      */
     public FTPMain(serverGUI gui) {
+        this.servGui = gui;
+        ftp = new Ftp_by_apache(FTP, username, password);
+        file = ftp.getAllFile();
 
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-
+                    initialize();
                     ftp = new Ftp_by_apache(FTP, username, password);
                     file = ftp.getAllFile();
                     initialize();
@@ -70,7 +74,7 @@ public class FTPMain implements ActionListener {
         //frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/com/sun/java/swing/plaf/windows/icons/UpFolder.gif")));
         frame.setTitle("FTP");
         frame.setBounds(100, 100, 470, 534);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.getContentPane().setLayout(null);
         frame.setVisible(true);
 
